@@ -188,7 +188,7 @@ h1,h2,h3,h4{
 .brush-underline.left{margin:14px 0 0;}
 
 section{padding:110px 0;}
-@media (max-width:768px){section{padding:76px 0;}}
+@media (max-width:768px){section{padding-top:104px;padding-bottom:70px;}}
 
 /* torn-paper style divider between sections, replacing plain straight lines */
 /* vintage ornamental divider — a thin rule with a classic printer's leaf
@@ -302,6 +302,9 @@ section{padding:110px 0;}
   }
   .nav-links.open{transform:translateX(0);}
   .nav-cta .btn.btn-outline{display:none;}
+  .nav-cta{gap:12px;}
+  .nav-cta .whatsapp-btn{padding:9px 14px;font-size:10.5px;letter-spacing:.12em;}
+  .nav-cta .whatsapp-btn svg{width:13px;height:13px;}
   .hamburger{display:flex;}
   .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
   .hamburger.open span:nth-child(2){opacity:0;}
@@ -384,10 +387,19 @@ section{padding:110px 0;}
 .hero-stats div span{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(251,248,241,.6);}
 
 @media (max-width:900px){
-  .hero{min-height:92vh;padding-top:96px;}
   .hero-corner{display:none;}
   .hero-wordmark{font-size:clamp(56px,17vw,110px);}
   .hero-stats{gap:28px;flex-wrap:wrap;}
+}
+@media (max-width:600px){
+  .hero-inner{padding-top:78px;}
+  .hero-main{padding:32px 24px 0;}
+  .hero-eyebrow{font-size:18px;margin-bottom:2px;}
+  .hero-wordmark{font-size:clamp(44px,15vw,72px);line-height:.94;}
+  .hero-actions{margin-top:16px;gap:12px;}
+  .hero-actions .btn{padding:13px 22px;font-size:11px;}
+  .hero-stats{margin-top:26px;padding:16px 24px 24px;gap:22px;}
+  .hero-stats div strong{font-size:20px;}
 }
 
 /* =========================================================
@@ -830,7 +842,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
 }
 .footer-credit a:hover{background:rgba(215,166,121,.28);color:var(--ivory);}
 @media (max-width:900px){.footer-top{grid-template-columns:1fr 1fr;row-gap:36px;}}
-@media (max-width:520px){.footer-top{grid-template-columns:1fr;}.footer-bottom{flex-direction:column;align-items:flex-start;}}
+@media (max-width:520px){.footer-bottom{flex-direction:column;align-items:flex-start;}}
 
 /* back to top */
 .to-top{
