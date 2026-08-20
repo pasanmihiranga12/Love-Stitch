@@ -472,15 +472,13 @@ section{padding:110px 0;}
    4. FEATURED COLLECTION
    ========================================================= */
 .collection{background:#E9D8AE;}
-.collection-filters{display:flex;justify-content:center;gap:12px;margin:-16px 0 40px;flex-wrap:wrap;}
-.filter-tab{
-  padding:9px 20px;border-radius:20px;
-  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-  border:1px solid rgba(46,39,24,.28);color:var(--charcoal);
-  background:transparent;transition:all .25s ease;
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--terracotta);margin-bottom:16px;text-decoration:none;font-weight:600;
+  transition:opacity .2s ease, transform .2s ease;
 }
-.filter-tab:hover{border-color:var(--charcoal);}
-.filter-tab.active{background:var(--charcoal);color:var(--ivory);border-color:var(--charcoal);}
+.back-link:hover{opacity:.7;transform:translateX(-3px);}
 .product-grid{
   display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:30px;
 }
@@ -552,37 +550,59 @@ section{padding:110px 0;}
    6. PACKAGES
    ========================================================= */
 .packages{background:var(--cream);}
-.package-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;align-items:stretch;}
-@media (max-width:1000px){.package-grid{grid-template-columns:1fr 1fr;}}
-@media (max-width:560px){.package-grid{grid-template-columns:1fr;}}
+.packages .wrap{position:relative;}
+.packages::before{
+  content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);
+  width:640px;height:640px;border-radius:50%;
+  background:radial-gradient(circle,rgba(166,85,47,.16),transparent 70%);
+  pointer-events:none;
+}
+.package-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;align-items:stretch;position:relative;}
+@media (max-width:900px){.package-grid{grid-template-columns:1fr;max-width:480px;margin:0 auto;}}
 .package-card{
   background:var(--ivory);
   border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:36px 28px;
+  border-radius:14px;
+  padding:0;
   display:flex;flex-direction:column;
-  transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+  position:relative;overflow:hidden;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .35s ease;
 }
-.package-card:hover{transform:translateY(-6px);box-shadow:0 26px 44px -22px rgba(51,44,34,.22);}
-.package-card.featured{background:var(--charcoal);color:var(--ivory);border-color:var(--charcoal);position:relative;}
+.package-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,var(--terracotta),#d7a679);
+}
+.package-card:hover{transform:translateY(-10px);box-shadow:0 32px 54px -22px rgba(51,44,34,.3);}
+.pkg-inner{padding:38px 30px 30px;display:flex;flex-direction:column;flex:1;}
+.pkg-num{
+  position:absolute;top:20px;right:24px;
+  font-family:var(--script);font-size:34px;color:rgba(46,39,24,.1);
+  line-height:1;
+}
+.package-card.featured{background:var(--charcoal);color:var(--ivory);border-color:var(--charcoal);}
 .package-card.featured .eyebrow{color:#d7a679;}
+.package-card.featured .pkg-num{color:rgba(251,248,241,.08);}
 .package-card.featured h3, .package-card.featured .pkg-price{color:var(--ivory);}
 .package-card.featured .pkg-note{color:rgba(251,248,241,.65);}
 .package-card.featured li{color:rgba(251,248,241,.85);border-color:rgba(251,248,241,.14);}
+.package-card.featured li::before{color:#d7a679;}
 .package-card.featured .btn-outline{border-color:rgba(251,248,241,.5);color:var(--ivory);}
 .package-card.featured .btn-outline:hover{background:var(--ivory);color:var(--charcoal);}
 .pkg-badge{
-  position:absolute;top:-13px;right:28px;
+  position:absolute;top:20px;right:24px;
   background:var(--terracotta);color:var(--ivory);
   font-size:10px;letter-spacing:.12em;text-transform:uppercase;
   padding:6px 12px;border-radius:20px;
+  box-shadow:0 8px 18px -6px rgba(166,85,47,.6);
 }
 .package-card .eyebrow{margin-bottom:8px;}
-.package-card h3{font-size:24px;}
-.pkg-price{font-family:var(--serif);font-size:34px;margin-top:14px;color:var(--charcoal);}
+.package-card h3{font-size:25px;}
+.pkg-price{font-family:var(--serif);font-size:38px;margin-top:16px;color:var(--charcoal);}
 .pkg-price span{font-family:var(--sans);font-size:12px;color:#4E3F27;}
-.pkg-note{font-size:13px;color:#443722;margin-top:4px;}
-.package-card ul{margin-top:24px;flex:1;display:flex;flex-direction:column;gap:11px;}
+.pkg-price-alt{font-size:13px;margin-top:6px;color:var(--terracotta);font-weight:600;}
+.package-card.featured .pkg-price-alt{color:#d7a679;}
+.pkg-note{font-size:13px;color:#443722;margin-top:6px;}
+.package-card ul{margin-top:26px;flex:1;display:flex;flex-direction:column;gap:11px;}
 .package-card li{
   font-size:13.5px;padding-bottom:11px;border-bottom:1px dashed var(--line);
   display:flex;gap:9px;align-items:flex-start;
@@ -634,11 +654,35 @@ section{padding:110px 0;}
   outline:none;border-color:var(--terracotta);background:var(--ivory);
 }
 .field textarea{resize:vertical;min-height:90px;}
-.field.file-field{
-  border:1px dashed var(--line);border-radius:2px;padding:16px;text-align:center;
-  background:var(--cream);cursor:pointer;
+.field input::placeholder,.field textarea::placeholder{color:#7A6A4E;opacity:1;}
+.field.upload-note{
+  padding:14px 16px;text-align:center;
+  background:#F4E3C2;border:1px solid #d7a679;border-radius:4px;
+  font-size:13px;color:#5C4630;font-weight:600;
 }
-.field.file-field span{font-size:13px;color:#443722;}
+.color-toggle{
+  display:flex;border:1px solid var(--line);border-radius:2px;overflow:hidden;
+}
+.color-toggle-opt{
+  flex:1;padding:11px 14px;background:var(--cream);border:none;cursor:pointer;
+  font-family:var(--sans);font-size:13.5px;color:var(--ink);
+  transition:background .2s ease, color .2s ease;
+}
+.color-toggle-opt + .color-toggle-opt{border-left:1px solid var(--line);}
+.color-toggle-opt.active{background:var(--charcoal);color:var(--ivory);}
+.selected-design-note{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:12px 16px;margin-bottom:4px;
+  background:#F4E3C2;border:1px solid #d7a679;border-radius:4px;
+  font-size:13.5px;color:#443722;
+}
+.selected-design-note strong{color:var(--terracotta);}
+.selected-design-note button{
+  background:none;border:1px solid #b98f5c;border-radius:3px;
+  padding:4px 10px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+  color:#5C4630;cursor:pointer;transition:background .2s ease;
+}
+.selected-design-note button:hover{background:rgba(0,0,0,.06);}
 .field .err{display:none;color:var(--terracotta);font-size:11.5px;margin-top:5px;}
 .field.invalid input,.field.invalid textarea,.field.invalid select{border-color:var(--terracotta);}
 .field.invalid .err{display:block;}
@@ -872,7 +916,6 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     <ul class="nav-links" id="navLinks">
       <li><a href="#top" class="nav-link">Home</a></li>
       <li><a href="#story" class="nav-link">Our Story</a></li>
-      <li><a href="#collection" class="nav-link">Collection</a></li>
       <li><a href="#packages" class="nav-link">Packages</a></li>
       <li><a href="#custom" class="nav-link">Custom</a></li>
       <li><a href="#gallery" class="nav-link">Gallery</a></li>
@@ -880,7 +923,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <li><a href="#faq" class="nav-link">Q&amp;A</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="https://wa.me/94000000000" target="_blank" rel="noopener" class="btn btn-primary whatsapp-btn">
+      <a href="https://wa.me/94711373969" target="_blank" rel="noopener" class="btn btn-primary whatsapp-btn">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.7.44 3.35 1.28 4.81L2 22l5.42-1.36a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Zm5.8 14.06c-.24.68-1.4 1.3-1.93 1.35-.5.05-1.1.07-1.78-.11a15.6 15.6 0 0 1-2.66-.94 12.4 12.4 0 0 1-4.6-4.07c-.44-.6-.9-1.31-.99-2.06-.09-.68.09-1.28.5-1.72.16-.17.35-.3.58-.3.19 0 .35.01.5.02.16.01.38-.06.6.45.24.55.79 1.9.86 2.04.07.14.11.3.02.48-.09.18-.14.29-.27.44-.13.15-.28.34-.4.46-.13.13-.27.27-.11.53.15.26.68 1.12 1.46 1.82 1 .9 1.85 1.18 2.11 1.32.26.13.41.11.56-.07.16-.18.66-.77.84-1.03.18-.26.35-.21.59-.13.24.09 1.52.72 1.78.85.26.13.44.2.5.31.06.11.06.63-.18 1.31Z"/></svg>
         Contact
       </a>
@@ -896,7 +939,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   <div class="hero-inner">
     <div class="hero-photo">
       <div class="img-slot">
-        <img src="images/hero-tote.jpg" alt="Hand-painted tote bag, hero photo" loading="eager">
+        <img src="images/hero-tote copy.jpg" alt="Hand-painted tote bag, hero photo" loading="eager">
         <div class="img-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/><circle cx="9" cy="14" r="1.4"/><path d="M9 17c1.2-2 3.8-2 5 0"/></svg>
           <span class="ph-label">Add photo: <code>images/hero-tote.jpg</code></span>
@@ -914,7 +957,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <span class="hero-eyebrow">every bag is</span>
       <h1 class="hero-wordmark">A Little Piece of Art</h1>
       <div class="hero-actions">
-        <a href="#collection" class="btn btn-primary">Shop the Collection</a>
+        <a href="#packages" class="btn btn-primary">Shop the Collection</a>
         <a href="#custom" class="btn btn-outline on-dark">Create Your Own</a>
       </div>
     </div>
@@ -940,7 +983,6 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         <h5>Explore</h5>
         <ul>
           <li><a href="#story">Our Story</a></li>
-          <li><a href="#collection">Collection</a></li>
           <li><a href="#packages">Packages</a></li>
           <li><a href="#gallery">Gallery</a></li>
         </ul>
@@ -956,12 +998,12 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         <h5>Follow</h5>
         <ul>
           <li><a href="#">Facebook</a></li>
-          <li><a href="https://wa.me/94000000000" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="https://wa.me/94711373969" target="_blank" rel="noopener">WhatsApp</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Love Stitch. All rights reserved. <a href="admin.html" style="color:rgba(251,248,241,.35);font-size:11px;margin-left:10px;">Admin</a></span>
+      <span>© 2026 Love Stitch. All rights reserved.</span>
       <span class="footer-credit">Designed &amp; built by <a href="https://lygenexlabs.com" target="_blank" rel="noopener">Lygen Media</a></span>
     </div>
   </div>
@@ -1009,164 +1051,160 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
 <div class="vintage-divider" style="background:var(--cream);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 
 <!-- =========================================================
-     FEATURED COLLECTION
+     BASIC COLLECTION (pre-made bags for the Basic package)
      ========================================================= -->
-<section class="collection" id="collection">
+<section class="collection" id="basic-collection">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">Featured Collection</span>
-      <h2>Little pieces <span class="script">of art.</span></h2>
+      <a href="#packages" class="back-link">&larr; Back to Packages</a>
+      <span class="eyebrow">Basic Collection</span>
+      <h2>Ready-made, <span class="script">simply yours.</span></h2>
       <span class="brush-underline"></span>
-      <p>Hand-painted designs made to be carried, loved, and lived with.</p>
-    </div>
-
-    <div class="collection-filters reveal">
-      <button class="filter-tab active" data-filter="all">All</button>
-      <button class="filter-tab" data-filter="floral">Florals</button>
-      <button class="filter-tab" data-filter="minimal">Minimal</button>
-      <button class="filter-tab" data-filter="custom">Custom</button>
+      <p>Pre-made bags included with the Basic package — pick a design, and we'll add your name if you'd like.</p>
     </div>
 
     <div class="product-grid">
-      <!-- Product cards are repeated below — copy/edit the block to add or remove products.
-           Add class "featured" to make one card a large 2x2 tile, and set
-           data-category to "floral", "minimal", or "custom" for the filter tabs. -->
-      <article class="product-card reveal" data-category="floral">
+      <!-- Product cards are repeated below — copy/edit the block to add or remove designs.
+           This is the reusable card component: change the img src/alt/label, the <h3>,
+           and the <p>, then paste to add more cards to this collection. -->
+      <article class="product-card reveal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-floral-dream.jpg" alt="Floral Dream hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-floral-dream.jpg</code></span><span class="ph-dim">900×1100px</span></div>
-          <span class="price-tag">LKR 4,500</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Floral Dream</h3>
           <p>Soft blooms in dusty rose &amp; sage, hand-painted edge to edge.</p>
           <div class="product-actions">
-            <a href="#" class="btn btn-outline">View Details</a>
-            <a href="#custom" class="btn btn-primary">Order</a>
+            <a href="#custom" class="btn btn-primary choose-design-btn" data-design="Floral Dream" data-package="Basic" style="flex:none;width:100%;">Choose This Design</a>
           </div>
         </div>
       </article>
 
-      <article class="product-card reveal" data-category="floral">
+      <article class="product-card reveal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-botanical-garden.jpg" alt="Botanical Garden hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-botanical-garden.jpg</code></span><span class="ph-dim">900×1100px</span></div>
-          <span class="price-tag">LKR 4,800</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Botanical Garden</h3>
           <p>A quiet, leafy composition in muted greens and cocoa.</p>
           <div class="product-actions">
-            <a href="#" class="btn btn-outline">View Details</a>
-            <a href="#custom" class="btn btn-primary">Order</a>
+            <a href="#custom" class="btn btn-primary choose-design-btn" data-design="Botanical Garden" data-package="Basic" style="flex:none;width:100%;">Choose This Design</a>
           </div>
         </div>
       </article>
 
-      <article class="product-card reveal" data-category="floral">
+      <article class="product-card reveal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-butterfly-garden.jpg" alt="Butterfly Garden hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-butterfly-garden.jpg</code></span><span class="ph-dim">900×1100px</span></div>
-          <span class="price-tag">LKR 5,200</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Butterfly Garden</h3>
           <p>Delicate wings scattered across warm ivory canvas.</p>
           <div class="product-actions">
-            <a href="#" class="btn btn-outline">View Details</a>
-            <a href="#custom" class="btn btn-primary">Order</a>
+            <a href="#custom" class="btn btn-primary choose-design-btn" data-design="Butterfly Garden" data-package="Basic" style="flex:none;width:100%;">Choose This Design</a>
           </div>
         </div>
       </article>
 
-      <article class="product-card reveal" data-category="floral">
+      <article class="product-card reveal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-vintage-bloom.jpg" alt="Vintage Bloom hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-vintage-bloom.jpg</code></span><span class="ph-dim">900×1100px</span></div>
-          <span class="price-tag">LKR 4,900</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Vintage Bloom</h3>
           <p>Faded terracotta petals with a hand-lettered detail.</p>
           <div class="product-actions">
-            <a href="#" class="btn btn-outline">View Details</a>
-            <a href="#custom" class="btn btn-primary">Order</a>
+            <a href="#custom" class="btn btn-primary choose-design-btn" data-design="Vintage Bloom" data-package="Basic" style="flex:none;width:100%;">Choose This Design</a>
           </div>
         </div>
       </article>
+    </div>
+  </div>
+</section>
 
-      <article class="product-card reveal" data-category="floral">
+<!-- =========================================================
+     STANDARD COLLECTION (pre-made bags for the Standard package)
+     ========================================================= -->
+<div class="vintage-divider" style="background:var(--cream);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
+<section class="collection" id="standard-collection" style="background:var(--cream);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <a href="#packages" class="back-link">&larr; Back to Packages</a>
+      <span class="eyebrow">Standard Collection</span>
+      <h2>Larger canvas, <span class="script">more detail.</span></h2>
+      <span class="brush-underline"></span>
+      <p>Pre-made bags included with the Standard package — larger artwork with unlimited colours.</p>
+    </div>
+
+    <div class="product-grid">
+      <article class="product-card reveal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-wildflower.jpg" alt="Wildflower hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-wildflower.jpg</code></span><span class="ph-dim">900×1100px</span></div>
-          <span class="price-tag">LKR 4,600</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Wildflower</h3>
           <p>Loose, painterly stems inspired by roadside meadows.</p>
           <div class="product-actions">
-            <a href="#" class="btn btn-outline">View Details</a>
-            <a href="#custom" class="btn btn-primary">Order</a>
+            <a href="#custom" class="btn btn-primary choose-design-btn" data-design="Wildflower" data-package="Standard" style="flex:none;width:100%;">Choose This Design</a>
           </div>
         </div>
       </article>
 
-      <article class="product-card reveal" data-category="floral">
+      <article class="product-card reveal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-sunflower.jpg" alt="Sunflower hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-sunflower.jpg</code></span><span class="ph-dim">900×1100px</span></div>
-          <span class="price-tag">LKR 4,700</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Sunflower</h3>
           <p>A warm, single statement bloom, hand-shaded petal by petal.</p>
           <div class="product-actions">
-            <a href="#" class="btn btn-outline">View Details</a>
-            <a href="#custom" class="btn btn-primary">Order</a>
+            <a href="#custom" class="btn btn-primary choose-design-btn" data-design="Sunflower" data-package="Standard" style="flex:none;width:100%;">Choose This Design</a>
           </div>
         </div>
       </article>
 
-      <article class="product-card reveal" data-category="minimal">
+      <article class="product-card reveal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-minimal-line-art.jpg" alt="Minimal Line Art hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-minimal-line-art.jpg</code></span><span class="ph-dim">900×1100px</span></div>
-          <span class="price-tag">LKR 4,200</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Minimal Line Art</h3>
           <p>A single continuous line, quiet and modern on raw canvas.</p>
           <div class="product-actions">
-            <a href="#" class="btn btn-outline">View Details</a>
-            <a href="#custom" class="btn btn-primary">Order</a>
+            <a href="#custom" class="btn btn-primary choose-design-btn" data-design="Minimal Line Art" data-package="Standard" style="flex:none;width:100%;">Choose This Design</a>
           </div>
         </div>
       </article>
 
-      <article class="product-card reveal" data-category="custom">
+      <article class="product-card reveal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-custom-initials.jpg" alt="Custom Initials hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-custom-initials.jpg</code></span><span class="ph-dim">900×1100px</span></div>
-          <span class="price-tag">LKR 3,900</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Custom Initials</h3>
           <p>Hand-lettered initials framed with a small botanical sprig.</p>
           <div class="product-actions">
-            <a href="#" class="btn btn-outline">View Details</a>
-            <a href="#custom" class="btn btn-primary">Order</a>
+            <a href="#custom" class="btn btn-primary choose-design-btn" data-design="Custom Initials" data-package="Standard" style="flex:none;width:100%;">Choose This Design</a>
           </div>
         </div>
       </article>
-        </div>
+    </div>
   </div>
 </section>
 
@@ -1220,69 +1258,63 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <span class="eyebrow">Packages</span>
       <h2>Choose how far<br>the canvas goes.</h2>
       <span class="brush-underline"></span>
-      <p>Prices below are a starting guide — edit freely to match your studio.</p>
+      <p>Basic and Standard come on a ready-made bag from our collection — Customize starts from your own idea.</p>
     </div>
 
     <div class="package-grid">
       <div class="package-card reveal">
-        <span class="eyebrow">Basic</span>
-        <h3>Basic</h3>
-        <div class="pkg-price">LKR 3,500<span> starting</span></div>
-        <p class="pkg-note">A simple, sweet piece to start with.</p>
-        <ul>
-          <li>Plain canvas tote</li>
-          <li>Small one-side design</li>
-          <li>Up to 2 colours</li>
-          <li>Choice from pre-made designs</li>
-        </ul>
-        <a href="#custom" class="btn btn-outline">Choose This</a>
+        <div class="pkg-num">01</div>
+        <div class="pkg-inner">
+          <span class="eyebrow">Basic</span>
+          <h3>Basic</h3>
+          <div class="pkg-price">LKR 1,000</div>
+          <p class="pkg-note">A simple, sweet piece to start with — pick your bag from the Basic Collection.</p>
+          <ul>
+            <li>Pre-made bag</li>
+            <li>Medium artwork</li>
+            <li>5 colours</li>
+            <li>Single side</li>
+            <li>Name can be added</li>
+          </ul>
+          <a href="#basic-collection" class="btn btn-outline">Browse Basic Collection</a>
+        </div>
+      </div>
+
+      <div class="package-card reveal">
+        <div class="pkg-num">02</div>
+        <div class="pkg-inner">
+          <span class="eyebrow">Standard</span>
+          <h3>Standard</h3>
+          <div class="pkg-price">LKR 1,200</div>
+          <p class="pkg-note">Our most-chosen everyday piece — pick your bag from the Standard Collection.</p>
+          <ul>
+            <li>Pre-made bag</li>
+            <li>Large &amp; detailed artwork</li>
+            <li>Unlimited colours</li>
+            <li>Single side</li>
+            <li>Name, initials, or short quote</li>
+          </ul>
+          <a href="#standard-collection" class="btn btn-outline">Browse Standard Collection</a>
+        </div>
       </div>
 
       <div class="package-card featured reveal">
         <span class="pkg-badge">Most Loved</span>
-        <span class="eyebrow">Standard</span>
-        <h3>Standard</h3>
-        <div class="pkg-price">LKR 4,800<span> starting</span></div>
-        <p class="pkg-note">Our most-chosen everyday piece.</p>
-        <ul>
-          <li>Quality canvas tote</li>
-          <li>Medium one-side artwork</li>
-          <li>Up to 5 colours</li>
-          <li>Name, initials or short quote</li>
-        </ul>
-        <a href="#custom" class="btn btn-primary">Choose This</a>
-      </div>
-
-      <div class="package-card reveal">
-        <span class="eyebrow">Premium</span>
-        <h3>Premium</h3>
-        <div class="pkg-price">LKR 7,200<span> starting</span></div>
-        <p class="pkg-note">For a fully detailed, gift-ready piece.</p>
-        <ul>
-          <li>Premium canvas tote</li>
-          <li>Large detailed artwork</li>
-          <li>One-side or both-side artwork</li>
-          <li>Unlimited colours</li>
-          <li>Custom idea or photo</li>
-          <li>Protective waterproof coating</li>
-          <li>Gift packaging</li>
-        </ul>
-        <a href="#custom" class="btn btn-outline">Choose This</a>
-      </div>
-
-      <div class="package-card reveal">
-        <span class="eyebrow">Custom</span>
-        <h3>Custom</h3>
-        <div class="pkg-price">Let's Talk<span></span></div>
-        <p class="pkg-note">Completely yours, from the ground up.</p>
-        <ul>
-          <li>Completely personalised design</li>
-          <li>Customer-selected size</li>
-          <li>Choice of one or both sides</li>
-          <li>Portraits, pets, logos, themes</li>
-          <li>Custom quotation after discussion</li>
-        </ul>
-        <a href="#custom" class="btn btn-outline">Start a Custom Order</a>
+        <div class="pkg-inner">
+          <span class="eyebrow">Customize</span>
+          <h3>Customize</h3>
+          <div class="pkg-price">LKR 1,400<span> single side</span></div>
+          <div class="pkg-price-alt">LKR 1,600 for double side</div>
+          <p class="pkg-note">Completely yours — your artwork, your bag, from the ground up.</p>
+          <ul>
+            <li>Your own design</li>
+            <li>Unlimited colours</li>
+            <li>Single side or double side</li>
+            <li>Fully custom artwork</li>
+            <li>Upload a reference image</li>
+          </ul>
+          <a href="#custom" class="btn btn-primary">Start a Custom Order</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1298,13 +1330,16 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <span class="eyebrow">Custom Orders</span>
       <h2>Your idea,<br>our canvas.</h2>
       <p>Have something special in mind? Tell us your idea, colours, inspiration, or share a reference image and we'll turn it into a hand-painted piece made especially for you.</p>
-      <div class="whatsapp-line">
-        <p>Prefer to chat first?</p>
-        <a href="https://wa.me/94000000000" target="_blank" rel="noopener" class="btn btn-outline on-dark">Order Through WhatsApp</a>
-      </div>
     </div>
 
     <form class="order-form reveal" id="customForm" novalidate>
+      <div class="form-row single" id="selectedDesignBanner" style="display:none;">
+        <div class="selected-design-note">
+          <span>🎨 You selected: <strong id="selectedDesignText"></strong></span>
+          <button type="button" id="clearSelectedDesign">Clear</button>
+        </div>
+        <input type="hidden" id="c-selected-design" name="selectedDesign" value="">
+      </div>
       <div class="form-row">
         <div class="field" data-required>
           <label for="c-name">Name</label>
@@ -1326,17 +1361,21 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         <div class="field">
           <label for="c-package">Package</label>
           <select id="c-package" name="package">
-            <option>Basic</option>
-            <option selected>Standard</option>
-            <option>Premium</option>
-            <option>Custom</option>
+            <option>Basic — LKR 1,000</option>
+            <option selected>Standard — LKR 1,200</option>
+            <option>Customize (single side) — LKR 1,400</option>
+            <option>Customize (double side) — LKR 1,600</option>
           </select>
         </div>
       </div>
       <div class="form-row">
         <div class="field">
-          <label for="c-color">Bag Colour</label>
-          <input type="text" id="c-color" name="bagColour" placeholder="e.g. natural canvas, cream">
+          <label>Bag Colour</label>
+          <div class="color-toggle" id="c-color-toggle" data-value="Black">
+            <button type="button" class="color-toggle-opt active" data-color="Black">Black</button>
+            <button type="button" class="color-toggle-opt" data-color="White">White</button>
+          </div>
+          <input type="hidden" id="c-color" name="bagColour" value="Black">
         </div>
         <div class="field">
           <label for="c-palette">Preferred Colours</label>
@@ -1351,10 +1390,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </div>
       <div class="form-row single">
-        <div class="field file-field" id="fileField">
-          <span id="fileFieldLabel">📎 Click to attach a reference image (optional)</span>
-          <input type="file" id="c-file" name="referenceImage" accept="image/*" style="display:none;">
-        </div>
+        <div class="field upload-note">📷 Got a reference photo? Send it to us on WhatsApp.</div>
       </div>
       <div class="form-row single">
         <div class="field">
@@ -1365,7 +1401,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <div class="form-foot">
         <button type="submit" class="btn btn-primary">Submit Custom Request</button>
       </div>
-      <div class="form-success" id="customSuccess">Thank you — your idea has been received. We'll be in touch soon to start painting.</div>
+      <div class="form-success" id="customSuccess">Opening WhatsApp with your details filled in — just hit send and we'll be in touch soon to start painting. If it didn't open, allow pop-ups and try again, or message us directly.</div>
     </form>
   </div>
 </section>
@@ -1493,7 +1529,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       </div>
       <div class="review-card reveal">
         <div class="stars">★★★★★</div>
-        <p>"The waterproof coating on my premium bag has held up so well and it still looks brand new months later."</p>
+        <p>"My custom bag has held up so well and it still looks brand new months later."</p>
         <div class="review-who"><div class="review-avatar">D</div><span>— Customer Name</span></div>
       </div>
     </div>
@@ -1518,7 +1554,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       </div>
       <div class="faq-item">
         <button class="faq-q">Can I request my own design?<span class="plus">+</span></button>
-        <div class="faq-a"><p>Absolutely. Choose the Custom package and share your idea, and we'll bring it to life on canvas.</p></div>
+        <div class="faq-a"><p>Absolutely. Choose the Customize package and share your idea, and we'll bring it to life on canvas.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Can I send a reference photo?<span class="plus">+</span></button>
@@ -1530,7 +1566,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       </div>
       <div class="faq-item">
         <button class="faq-q">Can I add my name or initials?<span class="plus">+</span></button>
-        <div class="faq-a"><p>Yes, name, initials or a short quote can be added from the Standard package upward.</p></div>
+        <div class="faq-a"><p>Yes — name and initials come with the Basic package, and a short quote can be added from Standard upward.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">How long does a custom order take?<span class="plus">+</span></button>
@@ -1542,11 +1578,11 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       </div>
       <div class="faq-item">
         <button class="faq-q">Is the artwork waterproof?<span class="plus">+</span></button>
-        <div class="faq-a"><p>Premium and Custom pieces include a protective waterproof coating over the painted design.</p></div>
+        <div class="faq-a"><p>A protective waterproof coating can be added over the painted design on request — just mention it in your order.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">Can I order a bag as a gift?<span class="plus">+</span></button>
-        <div class="faq-a"><p>Yes — gift packaging is included with the Premium package, and can be added to any order on request.</p></div>
+        <div class="faq-a"><p>Yes — gift packaging can be added to any order on request.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q">How do I place a custom order?<span class="plus">+</span></button>
@@ -1635,21 +1671,6 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     navLinks.classList.toggle('open');
   });
 
-  /* ---------- collection filter tabs ---------- */
-  var filterTabs = document.querySelectorAll('.filter-tab');
-  var productCards = document.querySelectorAll('.product-card');
-  filterTabs.forEach(function(tab){
-    tab.addEventListener('click', function(){
-      filterTabs.forEach(function(t){ t.classList.remove('active'); });
-      tab.classList.add('active');
-      var filter = tab.dataset.filter;
-      productCards.forEach(function(card){
-        var match = (filter === 'all') || (card.dataset.category === filter);
-        card.classList.toggle('is-hidden', !match);
-      });
-    });
-  });
-
   /* ---------- FAQ accordion ---------- */
   document.querySelectorAll('.faq-item').forEach(function(item){
     var q = item.querySelector('.faq-q');
@@ -1702,16 +1723,56 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   lightbox.addEventListener('click', function(e){ if (e.target === lightbox) closeLightbox(); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeLightbox(); });
 
-  /* ---------- file upload label ---------- */
-  var fileField = document.getElementById('fileField');
-  var fileInput = document.getElementById('c-file');
-  var fileLabel = document.getElementById('fileFieldLabel');
-  if (fileField){
-    fileField.addEventListener('click', function(){ fileInput.click(); });
-    fileInput.addEventListener('change', function(){
-      fileLabel.textContent = fileInput.files.length ? ('📎 ' + fileInput.files[0].name) : '📎 Click to attach a reference image (optional)';
+  /* ---------- bag colour toggle (Black / White) ---------- */
+  (function(){
+    var toggle = document.getElementById('c-color-toggle');
+    var hiddenColor = document.getElementById('c-color');
+    if (!toggle) return;
+    toggle.querySelectorAll('.color-toggle-opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        toggle.querySelectorAll('.color-toggle-opt').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        hiddenColor.value = btn.dataset.color;
+      });
     });
-  }
+  })();
+
+  /* ---------- carry a chosen pre-made design into the custom form ---------- */
+  (function(){
+    var banner = document.getElementById('selectedDesignBanner');
+    var textEl = document.getElementById('selectedDesignText');
+    var hiddenInput = document.getElementById('c-selected-design');
+    var packageSelect = document.getElementById('c-package');
+    var clearBtn = document.getElementById('clearSelectedDesign');
+    if (!banner) return;
+
+    var packageOptionMap = {
+      'Basic': 'Basic — LKR 1,000',
+      'Standard': 'Standard — LKR 1,200'
+    };
+
+    function applySelection(design, pkg){
+      hiddenInput.value = design;
+      textEl.textContent = design + (pkg ? ' (' + pkg + ' Collection)' : '');
+      banner.style.display = '';
+      if (pkg && packageSelect && packageOptionMap[pkg]){
+        packageSelect.value = packageOptionMap[pkg];
+      }
+    }
+
+    document.querySelectorAll('.choose-design-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        applySelection(btn.dataset.design, btn.dataset.package);
+      });
+    });
+
+    if (clearBtn){
+      clearBtn.addEventListener('click', function(){
+        hiddenInput.value = '';
+        banner.style.display = 'none';
+      });
+    }
+  })();
 
   /* ---------- form validation + success message ---------- */
   function validateForm(form){
@@ -1729,11 +1790,14 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     return valid;
   }
 
-  /* ---------- save submissions so the admin dashboard (admin.html) can list them ----------
-     Stored in this browser's localStorage only — there's no backend yet, so an order
-     placed on one device/browser won't show up on another. Good enough to see the
-     shape of things for now; ask me to wire up a real backend (Supabase) whenever
-     you're ready to take real orders across devices. */
+  /* ---------- send custom order details to WhatsApp ----------
+     No backend — the form values get formatted into a message and opened in a
+     wa.me link, which drops the buyer straight into a WhatsApp chat with the
+     business number, message pre-filled. They just hit send on their end.
+     Swap BUSINESS_WHATSAPP for the real number (digits only, country code,
+     no +, no spaces — e.g. "947XXXXXXXX"). */
+  var BUSINESS_WHATSAPP = '94711373969';
+
   function collectFormData(form){
     var data = {};
     form.querySelectorAll('input, textarea, select').forEach(function(input){
@@ -1746,32 +1810,44 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     });
     return data;
   }
-  function saveSubmission(kind, form){
-    try{
-      var key = 'loveStitchOrders';
-      var list = JSON.parse(localStorage.getItem(key) || '[]');
-      list.unshift({
-        id: 'o_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-        kind: kind,
-        status: 'New',
-        submittedAt: new Date().toISOString(),
-        data: collectFormData(form)
-      });
-      localStorage.setItem(key, JSON.stringify(list));
-    } catch(e){ /* localStorage unavailable — the form still works either way */ }
+
+  function buildWhatsAppMessage(data){
+    var lines = [
+      '*New Order — Love Stitch*',
+      '',
+      'Name: ' + (data.name || '-'),
+      'Email: ' + (data.email || '-'),
+      'WhatsApp: ' + (data.whatsapp || '-'),
+      'Package: ' + (data.package || '-'),
+    ];
+    if (data.selectedDesign){
+      lines.push('Selected Design: ' + data.selectedDesign);
+    }
+    lines.push(
+      'Bag Colour: ' + (data.bagColour || '-'),
+      'Preferred Colours: ' + (data.palette || '-'),
+      '',
+      'Design Idea: ' + (data.idea || '-')
+    );
+    if (data.notes){
+      lines.push('', 'Additional Notes: ' + data.notes);
+    }
+    return lines.join('\n');
   }
 
-  function wireForm(formId, successId, kind){
+  function wireForm(formId, successId){
     var form = document.getElementById(formId);
     var success = document.getElementById(successId);
     if (!form) return;
     form.addEventListener('submit', function(e){
       e.preventDefault();
       if (validateForm(form)){
-        saveSubmission(kind, form);
+        var data = collectFormData(form);
+        var message = buildWhatsAppMessage(data);
+        var waUrl = 'https://wa.me/' + BUSINESS_WHATSAPP + '?text=' + encodeURIComponent(message);
         success.classList.add('show');
+        window.open(waUrl, '_blank', 'noopener');
         form.reset();
-        if (fileLabel) fileLabel.textContent = '📎 Click to attach a reference image (optional)';
         setTimeout(function(){ success.classList.remove('show'); }, 6000);
       } else {
         success.classList.remove('show');
@@ -1784,8 +1860,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       });
     });
   }
-  wireForm('customForm', 'customSuccess', 'Custom Order');
-  wireForm('contactForm', 'contactSuccess', 'Enquiry');
+  wireForm('customForm', 'customSuccess');
 
 })();
 </script>
