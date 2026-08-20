@@ -38,7 +38,6 @@
   images/gallery-05.jpg  800x600    images/gallery-06.jpg  800x900
   images/gallery-07.jpg  800x800    images/gallery-08.jpg  800x1000
   images/gallery-09.jpg  800x600    images/gallery-10.jpg  800x900
-  images/insta-01.jpg .. images/insta-06.jpg   600x600 each
   images/og-cover.jpg             1200x630   — social share preview
 -->
 
@@ -65,24 +64,54 @@
    ========================================================= */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;} *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}}
+@media (prefers-reduced-motion: reduce){*{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}}
+
+/* =========================================================
+   LOCKED-SCROLL PANEL MODE
+   The page itself never scrolls. Each major section is a full-screen
+   panel; only one is shown at a time, and the only way to move between
+   them is the top bar (or any button/link pointing at a section id).
+   A section taller than the screen scrolls internally on its own.
+   ========================================================= */
+html, body{height:100%;overflow:hidden;}
+.hero, section{
+  display:none;
+  position:fixed;
+  inset:0;
+  top:0;left:0;
+  width:100%;
+  height:100vh;
+  height:100dvh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  z-index:1;
+}
+.hero.active-section{display:block;}
+section.active-section{display:block;}
+.vintage-divider{display:none;}
 
 :root{
   /* -- palette -- */
-  --cream:        #F4EEE0;
-  --ivory:        #FBF8F1;
-  --oatmeal:      #E7DEC9;
-  --antique-white:#EFE7D6;
-  --cocoa:        #5C4630;
-  --terracotta:   #B4623F;
-  --dusty-rose:   #C08880;
-  --sage:         #8A9678;
-  --charcoal:     #332C22;
-  --ink:          #2C2620;
-  --gold:         #A9824F;
-  --line:         rgba(51,44,34,0.14);
-  --sage-tint:    #DEE3D0;
-  --rose-tint:    #E8D2C8;
+  /* darkened toward the client's reference palette (toasted caramel /
+     spiced wine / olive harvest / cowhide cocoa) — hero left untouched */
+  --cream:        #C9A868;
+  --ivory:        #D9C293;
+  --oatmeal:      #B89757;
+  --antique-white:#CBAE78;
+  --cocoa:        #4A3826;
+  --terracotta:   #A6552F;
+  --dusty-rose:   #B8735F;
+  --sage:         #74805F;
+  --charcoal:     #2E2718;
+  --ink:          #241E14;
+  --gold:         #9C7A42;
+  --line:         rgba(36,28,16,0.28);
+  --sage-tint:    #7C7A4E;
+  --toasted-caramel: #4B3A24;
+  --spiced-wine:      #6E2E1A;
+  --olive-harvest:    #5C5A38;
+  --cowhide-cocoa:    #3B281B;
   --hero-cream:   #F2E3C4;
 
   /* -- type -- */
@@ -147,7 +176,7 @@ h1,h2,h3,h4{
 
 .section-head{max-width:640px;margin:0 auto 56px;text-align:center;}
 .section-head h2{font-size:clamp(32px,4.4vw,50px);line-height:1.15;}
-.section-head p{margin-top:16px;font-size:17px;color:#6b5f4d;}
+.section-head p{margin-top:16px;font-size:17px;color:#332A1A;}
 
 /* hand-drawn underline accent, reused as the site's signature mark */
 .brush-underline{
@@ -158,16 +187,21 @@ h1,h2,h3,h4{
 }
 .brush-underline.left{margin:14px 0 0;}
 
-section{padding:110px 0;position:relative;}
+section{padding:110px 0;}
 @media (max-width:768px){section{padding:76px 0;}}
 
 /* torn-paper style divider between sections, replacing plain straight lines */
-.paper-edge{
-  position:relative;height:46px;
-  background:var(--ivory);
+/* vintage ornamental divider — a thin rule with a classic printer's leaf
+   mark, replacing the old wavy paper-edge shapes between sections */
+.vintage-divider{
+  padding:38px 0;
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  color:var(--charcoal);
 }
-.paper-edge svg{position:absolute;bottom:-1px;left:0;width:100%;height:46px;display:block;}
-@media (max-width:768px){.paper-edge{height:28px;}.paper-edge svg{height:28px;}}
+.vintage-divider.on-dark{color:var(--ivory);}
+.vintage-divider .vd-line{width:100px;height:1px;background:currentColor;opacity:.4;}
+.vintage-divider .vd-mark{font-size:19px;line-height:1;color:var(--terracotta);}
+@media (max-width:600px){.vintage-divider .vd-line{width:50px;}.vintage-divider{padding:28px 0;}}
 
 /* buttons */
 .btn{
@@ -180,6 +214,8 @@ section{padding:110px 0;position:relative;}
 }
 .btn-primary{background:var(--charcoal);color:var(--ivory);}
 .btn-primary:hover{background:var(--terracotta);transform:translateY(-2px);}
+.whatsapp-btn{background:#3d7a4f;color:#F2E9D6;padding:12px 20px;}
+.whatsapp-btn:hover{background:#2f6140;transform:translateY(-2px);}
 .btn-outline{border:1px solid var(--charcoal);color:var(--charcoal);}
 .btn-outline:hover{background:var(--charcoal);color:var(--ivory);transform:translateY(-2px);}
 .btn-outline.on-dark{border-color:rgba(251,248,241,.55);color:var(--ivory);}
@@ -235,20 +271,22 @@ section{padding:110px 0;position:relative;}
   box-shadow:0 1px 0 var(--line);
   padding:14px 0;
 }
-.nav .wrap{display:flex;align-items:center;justify-content:space-between;}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;max-width:1360px;}
 .brand{font-family:var(--serif);font-size:23px;font-weight:600;color:var(--charcoal);letter-spacing:.02em;display:flex;align-items:center;gap:10px;}
 .brand span{color:var(--terracotta);font-family:var(--script);font-size:26px;margin-left:2px;}
 .brand-mark{width:36px;height:36px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 1px var(--line);}
-.nav-links{display:flex;gap:38px;}
+.nav-links{display:flex;gap:26px;}
 .nav-links a{
-  font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--charcoal);
-  position:relative;padding-bottom:4px;
+  font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--charcoal);
+  position:relative;padding-bottom:4px;white-space:nowrap;
 }
 .nav-links a::after{
   content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--terracotta);
   transition:width .3s ease;
 }
 .nav-links a:hover::after{width:100%;}
+.nav-links a.active{color:var(--terracotta);}
+.nav-links a.active::after{width:100%;}
 .nav-cta{display:flex;align-items:center;gap:22px;}
 .nav-cta .btn{padding:12px 24px;}
 .hamburger{display:none;flex-direction:column;gap:5px;width:26px;}
@@ -274,12 +312,20 @@ section{padding:110px 0;position:relative;}
    2. HERO — full-bleed photo, oversized overlapping wordmark
    ========================================================= */
 .hero{
-  position:relative;
-  min-height:100vh;
-  display:flex;flex-direction:column;justify-content:flex-end;
+  position:fixed;
+  inset:0;
+  height:100vh;
+  height:100dvh;
   background:var(--charcoal);
-  overflow:hidden;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+.hero-inner{
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;flex-direction:column;justify-content:flex-end;
   padding-top:110px;
+  position:relative;
 }
 .hero-photo{
   position:absolute;inset:0;
@@ -348,31 +394,95 @@ section{padding:110px 0;position:relative;}
    3. BRAND STORY
    ========================================================= */
 .story{background:var(--ivory);}
-.story .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center;}
-.story-visual{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.story-visual .img-slot:first-child{--ar:3/4; grid-row:1/3;}
-.story-visual .img-slot:last-child{--ar:1/1; align-self:end;}
-.story-copy .eyebrow{display:block;}
-.story-copy h2{font-size:clamp(30px,4vw,44px);font-style:italic;line-height:1.2;}
-.story-copy p{margin-top:20px;color:#5c5241;font-size:16.5px;}
+.story .wrap{display:grid;grid-template-columns:.95fr 1.05fr;gap:90px;align-items:center;}
+.story-visual{position:relative;padding:6px 54px 54px 6px;}
+.story-img-main{
+  border:10px solid var(--cream);
+  outline:1px solid rgba(46,39,24,.3);outline-offset:-1px;
+  box-shadow:0 2px 5px rgba(46,39,24,.1) inset, 0 28px 52px -18px rgba(46,39,24,.42);
+  transform:rotate(-2deg);
+  position:relative;z-index:1;
+}
+.story-img-accent{
+  width:56%;
+  border:8px solid var(--ivory);
+  outline:1px solid rgba(46,39,24,.3);outline-offset:-1px;
+  box-shadow:0 2px 5px rgba(46,39,24,.1) inset, 0 22px 42px -16px rgba(46,39,24,.42);
+  position:absolute;
+  right:0;bottom:0;
+  transform:rotate(4deg);
+  z-index:2;
+}
+.story-img-accent::before{
+  content:"";position:absolute;top:-11px;left:50%;
+  transform:translateX(-50%) rotate(-5deg);
+  width:58px;height:20px;
+  background:rgba(180,98,63,.6);
+  box-shadow:0 3px 6px rgba(0,0,0,.16);
+}
+.story-badge{
+  position:absolute;top:-14px;left:-14px;
+  width:98px;height:98px;border-radius:50%;
+  background:var(--terracotta);color:var(--ivory);
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:var(--script);font-size:16px;line-height:1.2;
+  transform:rotate(-9deg);
+  box-shadow:0 16px 30px rgba(46,39,24,.32);
+  z-index:3;
+}
+.story-copy{position:relative;}
+.story-watermark{
+  position:absolute;top:-64px;left:-6px;right:0;
+  font-family:var(--display);font-style:italic;font-weight:700;
+  font-size:150px;color:rgba(166,85,47,.1);
+  line-height:1;pointer-events:none;user-select:none;
+  z-index:0;white-space:nowrap;overflow:hidden;
+}
+.story-copy .eyebrow, .story-copy h2, .story-copy p, .story-copy .story-signoff{position:relative;z-index:1;}
+.story-copy h2{
+  font-family:var(--display);font-style:italic;font-weight:700;
+  font-size:clamp(34px,4.6vw,52px);line-height:1.14;
+}
+.story-copy p{margin-top:20px;color:#2E2416;font-size:16.5px;}
 .story-copy p + p{margin-top:16px;}
 .story-signoff{margin-top:30px;font-family:var(--script);font-size:24px;color:var(--terracotta);}
 @media (max-width:900px){
-  .story .wrap{grid-template-columns:1fr;gap:40px;}
-  .story-visual{order:-1;}
+  .story .wrap{grid-template-columns:1fr;gap:56px;}
+  .story-visual{order:-1;padding:6px 40px 40px 6px;}
+  .story-watermark{display:none;}
+}
+@media (max-width:520px){
+  .story-visual{padding:6px 30px 30px 6px;}
+  .story-img-accent{width:62%;}
 }
 
 /* =========================================================
    4. FEATURED COLLECTION
    ========================================================= */
-.collection{background:var(--cream);}
-.product-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:30px;
+.collection{background:#E9D8AE;}
+.collection-filters{display:flex;justify-content:center;gap:12px;margin:-16px 0 40px;flex-wrap:wrap;}
+.filter-tab{
+  padding:9px 20px;border-radius:20px;
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid rgba(46,39,24,.28);color:var(--charcoal);
+  background:transparent;transition:all .25s ease;
 }
-@media (max-width:1000px){.product-grid{grid-template-columns:repeat(2,1fr);}}
-@media (max-width:560px){.product-grid{grid-template-columns:1fr;}}
-.product-card{position:relative;}
-.product-card .img-slot{--ar:4/5;}
+.filter-tab:hover{border-color:var(--charcoal);}
+.filter-tab.active{background:var(--charcoal);color:var(--ivory);border-color:var(--charcoal);}
+.product-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:30px;
+}
+.product-card{position:relative;transition:transform .4s ease;}
+.product-card.is-hidden{display:none;}
+@media (max-width:1000px){
+  .product-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:560px){
+  .product-grid{grid-template-columns:1fr;}
+}
+.product-card .img-slot{--ar:4/5;overflow:hidden;}
+.product-card .img-slot img{transition:transform .6s ease;}
+.product-card:hover .img-slot img.is-loaded{transform:scale(1.06);}
 .product-card .stamp{
   position:absolute;top:14px;right:14px;z-index:2;
   width:56px;height:56px;border-radius:50%;
@@ -381,14 +491,29 @@ section{padding:110px 0;position:relative;}
   display:flex;align-items:center;justify-content:center;
   font-family:var(--script);font-size:11px;color:var(--terracotta);text-align:center;line-height:1.1;
   transform:rotate(6deg);
+  transition:transform .3s ease;
+}
+.product-card:hover .stamp{transform:rotate(0deg) scale(1.08);}
+.price-tag{
+  position:absolute;left:16px;bottom:16px;z-index:2;
+  background:var(--ivory);color:var(--charcoal);
+  padding:9px 16px 9px 22px;
+  font-family:var(--serif);font-weight:600;font-size:16px;
+  border-radius:0 4px 4px 0;
+  transform:rotate(-3deg);
+  box-shadow:0 10px 20px rgba(0,0,0,.28);
+  transition:transform .3s ease;
+}
+.product-card:hover .price-tag{transform:rotate(0deg) translateY(-2px);}
+.price-tag::before{
+  content:"";position:absolute;left:9px;top:50%;transform:translateY(-50%);
+  width:6px;height:6px;border-radius:50%;
+  background:var(--cream);
+  box-shadow:0 0 0 1px rgba(46,39,24,.45);
 }
 .product-info{padding-top:16px;}
 .product-info h3{font-size:20px;font-weight:600;}
-.product-info p{font-size:13.5px;color:#7a6e5a;margin-top:5px;}
-.product-price{
-  margin-top:10px;font-family:var(--serif);font-size:19px;color:var(--charcoal);font-weight:600;
-}
-.product-price span{font-family:var(--sans);font-size:11px;color:#9c8f78;font-weight:400;margin-left:6px;}
+.product-info p{font-size:13.5px;color:#3B301E;margin-top:5px;}
 .product-actions{display:flex;gap:10px;margin-top:16px;}
 .product-actions .btn{padding:11px 16px;font-size:10.5px;flex:1;}
 
@@ -409,7 +534,7 @@ section{padding:110px 0;position:relative;}
 .step-icon svg{width:30px;height:30px;stroke:var(--terracotta);}
 .step .num{font-family:var(--script);color:var(--terracotta);font-size:20px;display:block;margin-bottom:6px;}
 .step h4{font-size:18px;}
-.step p{margin-top:8px;font-size:14px;color:#7a6e5a;}
+.step p{margin-top:8px;font-size:14px;color:#3B301E;}
 
 /* =========================================================
    6. PACKAGES
@@ -443,8 +568,8 @@ section{padding:110px 0;position:relative;}
 .package-card .eyebrow{margin-bottom:8px;}
 .package-card h3{font-size:24px;}
 .pkg-price{font-family:var(--serif);font-size:34px;margin-top:14px;color:var(--charcoal);}
-.pkg-price span{font-family:var(--sans);font-size:12px;color:#9c8f78;}
-.pkg-note{font-size:13px;color:#8a7d68;margin-top:4px;}
+.pkg-price span{font-family:var(--sans);font-size:12px;color:#4E3F27;}
+.pkg-note{font-size:13px;color:#443722;margin-top:4px;}
 .package-card ul{margin-top:24px;flex:1;display:flex;flex-direction:column;gap:11px;}
 .package-card li{
   font-size:13.5px;padding-bottom:11px;border-bottom:1px dashed var(--line);
@@ -459,8 +584,6 @@ section{padding:110px 0;position:relative;}
 .custom-order{
   background:var(--charcoal);
   color:var(--ivory);
-  position:relative;
-  overflow:hidden;
 }
 .custom-order::before{
   content:"";position:absolute;inset:0;
@@ -486,7 +609,7 @@ section{padding:110px 0;position:relative;}
 .field{margin-bottom:18px;}
 .field label{
   display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-  color:#7a6e5a;margin-bottom:7px;
+  color:#3B301E;margin-bottom:7px;
 }
 .field input,.field select,.field textarea{
   width:100%;padding:12px 14px;
@@ -503,7 +626,7 @@ section{padding:110px 0;position:relative;}
   border:1px dashed var(--line);border-radius:2px;padding:16px;text-align:center;
   background:var(--cream);cursor:pointer;
 }
-.field.file-field span{font-size:13px;color:#8a7d68;}
+.field.file-field span{font-size:13px;color:#443722;}
 .field .err{display:none;color:var(--terracotta);font-size:11.5px;margin-top:5px;}
 .field.invalid input,.field.invalid textarea,.field.invalid select{border-color:var(--terracotta);}
 .field.invalid .err{display:block;}
@@ -555,11 +678,22 @@ section{padding:110px 0;position:relative;}
   scroll-snap-align:start;
   aspect-ratio:auto;
   cursor:zoom-in;
-  box-shadow:0 16px 34px -14px rgba(51,44,34,.38);
   background:var(--oatmeal);
   transition:transform .35s ease, box-shadow .35s ease;
+  /* vintage paper-frame mat: cream border, thin hairline, soft aged shadow */
+  border:10px solid var(--ivory);
+  outline:1px solid rgba(46,39,24,.3);
+  outline-offset:-1px;
+  box-shadow:
+    0 2px 5px rgba(46,39,24,.12) inset,
+    0 18px 34px -14px rgba(46,39,24,.45);
 }
-.masonry .img-slot:hover{transform:translateY(-4px);box-shadow:0 22px 44px -14px rgba(51,44,34,.45);}
+.masonry .img-slot:hover{
+  transform:translateY(-4px);
+  box-shadow:
+    0 2px 5px rgba(46,39,24,.12) inset,
+    0 24px 46px -14px rgba(46,39,24,.5);
+}
 .masonry .img-slot::after{
   content:"";position:absolute;inset:0;
   background:linear-gradient(0deg, rgba(44,38,32,.32), transparent 45%);
@@ -608,8 +742,10 @@ section{padding:110px 0;position:relative;}
 /* =========================================================
    9. REVIEWS
    ========================================================= */
-.reviews{background:var(--rose-tint);}
-.reviews .review-card{background:var(--ivory);}
+.reviews{background:var(--cowhide-cocoa);}
+.reviews .section-head .eyebrow{color:#d7a679;}
+.reviews .section-head h2{color:var(--ivory);}
+.reviews .review-card{background:rgba(251,248,241,.05);border-color:rgba(251,248,241,.14);}
 .review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
 @media (max-width:900px){.review-grid{grid-template-columns:1fr 1fr;}}
 @media (max-width:600px){.review-grid{grid-template-columns:1fr;}}
@@ -617,15 +753,16 @@ section{padding:110px 0;position:relative;}
   background:var(--ivory);border:1px solid var(--line);border-radius:var(--radius);
   padding:30px 26px;position:relative;
 }
-.review-card .stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:14px;}
-.review-card p{font-size:15px;color:#4f4636;font-style:italic;font-family:var(--serif);line-height:1.55;}
+.review-card .stars{color:#d7a679;font-size:13px;letter-spacing:2px;margin-bottom:14px;}
+.review-card p{font-size:15px;color:rgba(251,248,241,.88);font-style:italic;font-family:var(--serif);line-height:1.55;}
 .review-who{display:flex;align-items:center;gap:12px;margin-top:20px;}
 .review-avatar{
   width:38px;height:38px;border-radius:50%;
-  background:var(--oatmeal);display:flex;align-items:center;justify-content:center;
-  font-family:var(--serif);font-size:14px;color:var(--cocoa);
+  background:rgba(251,248,241,.12);display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:14px;color:var(--ivory);
 }
-.review-who span{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#7a6e5a;}
+.reviews .review-who span{color:rgba(251,248,241,.6);}
+.review-who span{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#3B301E;}
 
 /* =========================================================
    10. FAQ
@@ -642,12 +779,12 @@ section{padding:110px 0;position:relative;}
 }
 .faq-item.open .faq-q .plus{transform:rotate(45deg);}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease;}
-.faq-a p{padding:0 4px 22px;font-size:14.5px;color:#6b5f4d;max-width:640px;}
+.faq-a p{padding:0 4px 22px;font-size:14.5px;color:#332A1A;max-width:640px;}
 
 /* =========================================================
    11. CONTACT
    ========================================================= */
-.contact{background:var(--charcoal);position:relative;overflow:hidden;}
+.contact{background:var(--charcoal);}
 .contact::before{
   content:"";position:absolute;inset:0;
   background:radial-gradient(ellipse at 15% 100%, rgba(138,150,120,.14), transparent 55%);
@@ -669,17 +806,7 @@ section{padding:110px 0;position:relative;}
 @media (max-width:900px){.contact .wrap{grid-template-columns:1fr;gap:40px;}.contact-form{padding:24px;}}
 
 /* =========================================================
-   12. INSTAGRAM STRIP
-   ========================================================= */
-.insta{background:var(--ivory);padding-bottom:110px;}
-.insta-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px;flex-wrap:wrap;gap:14px;}
-.insta-head h3{font-family:var(--script);font-size:28px;color:var(--terracotta);}
-.insta-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;}
-.insta-grid .img-slot{--ar:1/1;}
-@media (max-width:768px){.insta-grid{grid-template-columns:repeat(3,1fr);}}
-
-/* =========================================================
-   13. FOOTER
+   12. FOOTER
    ========================================================= */
 footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26px;}
 .footer-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:50px;padding-bottom:50px;border-bottom:1px solid rgba(251,248,241,.1);}
@@ -694,8 +821,14 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   display:flex;justify-content:space-between;align-items:center;padding-top:26px;
   font-size:12.5px;color:rgba(251,248,241,.5);flex-wrap:wrap;gap:12px;
 }
-.footer-credit{font-size:12.5px;color:rgba(251,248,241,.5);}
-.footer-credit a{color:#d7a679;border-bottom:1px solid rgba(215,166,121,.4);}
+.footer-credit{font-size:12.5px;color:rgba(251,248,241,.55);}
+.footer-credit a{
+  color:#f0cf9c;font-weight:500;
+  padding:3px 9px;margin-left:2px;border-radius:20px;
+  background:rgba(215,166,121,.14);border:1px solid rgba(215,166,121,.4);
+  transition:background .25s ease, color .25s ease;
+}
+.footer-credit a:hover{background:rgba(215,166,121,.28);color:var(--ivory);}
 @media (max-width:900px){.footer-top{grid-template-columns:1fr 1fr;row-gap:36px;}}
 @media (max-width:520px){.footer-top{grid-template-columns:1fr;}.footer-bottom{flex-direction:column;align-items:flex-start;}}
 
@@ -731,10 +864,14 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <li><a href="#packages" class="nav-link">Packages</a></li>
       <li><a href="#custom" class="nav-link">Custom</a></li>
       <li><a href="#gallery" class="nav-link">Gallery</a></li>
-      <li><a href="#contact" class="nav-link">Contact</a></li>
+      <li><a href="#reviews" class="nav-link">Reviews</a></li>
+      <li><a href="#faq" class="nav-link">Q&amp;A</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="#contact" class="btn btn-outline">Get in touch</a>
+      <a href="https://wa.me/94000000000" target="_blank" rel="noopener" class="btn btn-primary whatsapp-btn">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.7.44 3.35 1.28 4.81L2 22l5.42-1.36a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Zm5.8 14.06c-.24.68-1.4 1.3-1.93 1.35-.5.05-1.1.07-1.78-.11a15.6 15.6 0 0 1-2.66-.94 12.4 12.4 0 0 1-4.6-4.07c-.44-.6-.9-1.31-.99-2.06-.09-.68.09-1.28.5-1.72.16-.17.35-.3.58-.3.19 0 .35.01.5.02.16.01.38-.06.6.45.24.55.79 1.9.86 2.04.07.14.11.3.02.48-.09.18-.14.29-.27.44-.13.15-.28.34-.4.46-.13.13-.27.27-.11.53.15.26.68 1.12 1.46 1.82 1 .9 1.85 1.18 2.11 1.32.26.13.41.11.56-.07.16-.18.66-.77.84-1.03.18-.26.35-.21.59-.13.24.09 1.52.72 1.78.85.26.13.44.2.5.31.06.11.06.63-.18 1.31Z"/></svg>
+        Contact
+      </a>
       <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -744,39 +881,82 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
      HERO
      ========================================================= -->
 <header class="hero" id="top">
-  <div class="hero-photo">
-    <div class="img-slot">
-      <img src="images/hero-tote.jpg" alt="Hand-painted tote bag, hero photo" loading="eager">
-      <div class="img-placeholder">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/><circle cx="9" cy="14" r="1.4"/><path d="M9 17c1.2-2 3.8-2 5 0"/></svg>
-        <span class="ph-label">Add photo: <code>images/hero-tote.jpg</code></span>
-        <span class="ph-dim">Full-bleed hero — recommended 1800×1600px, landscape, subject kept toward the top third</span>
+  <div class="hero-inner">
+    <div class="hero-photo">
+      <div class="img-slot">
+        <img src="images/hero-tote.jpg" alt="Hand-painted tote bag, hero photo" loading="eager">
+        <div class="img-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/><circle cx="9" cy="14" r="1.4"/><path d="M9 17c1.2-2 3.8-2 5 0"/></svg>
+          <span class="ph-label">Add photo: <code>images/hero-tote.jpg</code></span>
+          <span class="ph-dim">Full-bleed hero — recommended 1800×1600px, landscape, subject kept toward the top third</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="hero-corner">
-    <span>Hand-Painted<br>Since Day One</span>
-    <span>Every Piece<br>One Of A Kind</span>
-  </div>
+    <div class="hero-corner">
+      <span>Hand-Painted<br>Since Day One</span>
+      <span>Every Piece<br>One Of A Kind</span>
+    </div>
 
-  <div class="hero-main">
-    <span class="hero-eyebrow">every bag is</span>
-    <h1 class="hero-wordmark">A Little Piece of Art</h1>
-    <div class="hero-actions">
-      <a href="#collection" class="btn btn-primary">Shop the Collection</a>
-      <a href="#custom" class="btn btn-outline on-dark">Create Your Own</a>
+    <div class="hero-main">
+      <span class="hero-eyebrow">every bag is</span>
+      <h1 class="hero-wordmark">A Little Piece of Art</h1>
+      <div class="hero-actions">
+        <a href="#collection" class="btn btn-primary">Shop the Collection</a>
+        <a href="#custom" class="btn btn-outline on-dark">Create Your Own</a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div><strong>250+</strong><span>Bags Painted</span></div>
+      <div><strong>100%</strong><span>Hand-Painted</span></div>
+      <div><strong>1 of 1</strong><span>Every Piece</span></div>
     </div>
   </div>
 
-  <div class="hero-stats">
-    <div><strong>250+</strong><span>Bags Painted</span></div>
-    <div><strong>100%</strong><span>Hand-Painted</span></div>
-    <div><strong>1 of 1</strong><span>Every Piece</span></div>
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#top" class="brand"><img src="images/logo.png" alt="Love Stitch logo" class="brand-mark">Love Stitch</a>
+        <p>Hand-painted bags, made with love. Painted slowly, made especially for you.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Explore</h5>
+        <ul>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#collection">Collection</a></li>
+          <li><a href="#packages">Packages</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Studio</h5>
+        <ul>
+          <li><a href="#custom">Custom Orders</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Follow</h5>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="https://wa.me/94000000000" target="_blank" rel="noopener">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Love Stitch. All rights reserved. <a href="admin.html" style="color:rgba(251,248,241,.35);font-size:11px;margin-left:10px;">Admin</a></span>
+      <span class="footer-credit">Designed &amp; built by <a href="https://lygenexlabs.com" target="_blank" rel="noopener">Lygen Media</a></span>
+    </div>
   </div>
+</footer>
 </header>
 
-<div class="paper-edge"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path d="M0,20 Q40,4 80,18 T160,16 T240,22 T320,10 T400,20 T480,14 T560,24 T640,12 T720,20 T800,8 T880,20 T960,16 T1040,24 T1120,12 T1200,20 L1200,46 L0,46 Z" fill="#FBF8F1"/></svg></div>
+<div class="vintage-divider" style="background:var(--ivory);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 
 <!-- =========================================================
      BRAND STORY / ABOUT
@@ -784,7 +964,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
 <section class="story" id="story">
   <div class="wrap">
     <div class="story-visual reveal">
-      <div class="img-slot" style="--ar:3/4;">
+      <div class="img-slot story-img-main" style="--ar:3/4;">
         <img src="images/story-artist.jpg" alt="Artist hand-painting a tote bag">
         <div class="img-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M12 3c-3 0-5 2-5 5 0 2 1 3 1 4a2 2 0 0 1-2 2c-1 0-2-.5-2-1.5C4 17 8 21 12 21c5 0 9-4 9-9 0-5-4-9-9-9Z"/><circle cx="9" cy="10" r="1"/><circle cx="13" cy="8" r="1"/><circle cx="15" cy="12" r="1"/></svg>
@@ -792,7 +972,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
           <span class="ph-dim">Recommended 1000×1250px</span>
         </div>
       </div>
-      <div class="img-slot" style="--ar:1/1;">
+      <div class="img-slot story-img-accent" style="--ar:1/1;">
         <img src="images/story-detail.jpg" alt="Close-up of hand-painted brushwork on canvas">
         <div class="img-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 15l5-5 4 4 5-6 4 4"/></svg>
@@ -800,10 +980,13 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
           <span class="ph-dim">900×900px</span>
         </div>
       </div>
+      <div class="story-badge">hand<br>painted</div>
     </div>
     <div class="story-copy reveal">
+      <span class="story-watermark">Art</span>
       <span class="eyebrow">Our Story</span>
       <h2>Made by hand.<br>Made for you.</h2>
+      <span class="brush-underline left"></span>
       <p>Every brushstroke is painted by hand, turning an everyday tote into something personal. We believe the things we carry should tell a story — yours.</p>
       <p>No two bags leave the studio exactly alike. What starts as blank canvas becomes a small, considered piece of art — shaped by a colour you love, a phrase you carry with you, or an idea only you could have thought of.</p>
       <p class="story-signoff">— painted slowly, with care</p>
@@ -811,7 +994,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   </div>
 </section>
 
-<div class="paper-edge" style="background:var(--cream);"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path d="M0,26 Q40,10 80,24 T160,22 T240,28 T320,16 T400,26 T480,20 T560,30 T640,18 T720,26 T800,14 T880,26 T960,22 T1040,30 T1120,18 T1200,26 L1200,0 L0,0 Z" fill="#FBF8F1"/></svg></div>
+<div class="vintage-divider" style="background:var(--cream);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 
 <!-- =========================================================
      FEATURED COLLECTION
@@ -825,18 +1008,27 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <p>Hand-painted designs made to be carried, loved, and lived with.</p>
     </div>
 
+    <div class="collection-filters reveal">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="floral">Florals</button>
+      <button class="filter-tab" data-filter="minimal">Minimal</button>
+      <button class="filter-tab" data-filter="custom">Custom</button>
+    </div>
+
     <div class="product-grid">
-      <!-- Product cards are repeated below — copy/edit the block to add or remove products -->
-      <article class="product-card reveal">
+      <!-- Product cards are repeated below — copy/edit the block to add or remove products.
+           Add class "featured" to make one card a large 2x2 tile, and set
+           data-category to "floral", "minimal", or "custom" for the filter tabs. -->
+      <article class="product-card reveal" data-category="floral">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-floral-dream.jpg" alt="Floral Dream hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-floral-dream.jpg</code></span><span class="ph-dim">900×1100px</span></div>
+          <span class="price-tag">LKR 4,500</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Floral Dream</h3>
           <p>Soft blooms in dusty rose &amp; sage, hand-painted edge to edge.</p>
-          <div class="product-price">LKR 4,500 <span>/ from</span></div>
           <div class="product-actions">
             <a href="#" class="btn btn-outline">View Details</a>
             <a href="#custom" class="btn btn-primary">Order</a>
@@ -844,16 +1036,16 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </article>
 
-      <article class="product-card reveal">
+      <article class="product-card reveal" data-category="floral">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-botanical-garden.jpg" alt="Botanical Garden hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-botanical-garden.jpg</code></span><span class="ph-dim">900×1100px</span></div>
+          <span class="price-tag">LKR 4,800</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Botanical Garden</h3>
           <p>A quiet, leafy composition in muted greens and cocoa.</p>
-          <div class="product-price">LKR 4,800 <span>/ from</span></div>
           <div class="product-actions">
             <a href="#" class="btn btn-outline">View Details</a>
             <a href="#custom" class="btn btn-primary">Order</a>
@@ -861,16 +1053,16 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </article>
 
-      <article class="product-card reveal">
+      <article class="product-card reveal" data-category="floral">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-butterfly-garden.jpg" alt="Butterfly Garden hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-butterfly-garden.jpg</code></span><span class="ph-dim">900×1100px</span></div>
+          <span class="price-tag">LKR 5,200</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Butterfly Garden</h3>
           <p>Delicate wings scattered across warm ivory canvas.</p>
-          <div class="product-price">LKR 5,200 <span>/ from</span></div>
           <div class="product-actions">
             <a href="#" class="btn btn-outline">View Details</a>
             <a href="#custom" class="btn btn-primary">Order</a>
@@ -878,16 +1070,16 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </article>
 
-      <article class="product-card reveal">
+      <article class="product-card reveal" data-category="floral">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-vintage-bloom.jpg" alt="Vintage Bloom hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-vintage-bloom.jpg</code></span><span class="ph-dim">900×1100px</span></div>
+          <span class="price-tag">LKR 4,900</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Vintage Bloom</h3>
           <p>Faded terracotta petals with a hand-lettered detail.</p>
-          <div class="product-price">LKR 4,900 <span>/ from</span></div>
           <div class="product-actions">
             <a href="#" class="btn btn-outline">View Details</a>
             <a href="#custom" class="btn btn-primary">Order</a>
@@ -895,16 +1087,16 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </article>
 
-      <article class="product-card reveal">
+      <article class="product-card reveal" data-category="floral">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-wildflower.jpg" alt="Wildflower hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-wildflower.jpg</code></span><span class="ph-dim">900×1100px</span></div>
+          <span class="price-tag">LKR 4,600</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Wildflower</h3>
           <p>Loose, painterly stems inspired by roadside meadows.</p>
-          <div class="product-price">LKR 4,600 <span>/ from</span></div>
           <div class="product-actions">
             <a href="#" class="btn btn-outline">View Details</a>
             <a href="#custom" class="btn btn-primary">Order</a>
@@ -912,16 +1104,16 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </article>
 
-      <article class="product-card reveal">
+      <article class="product-card reveal" data-category="floral">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-sunflower.jpg" alt="Sunflower hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-sunflower.jpg</code></span><span class="ph-dim">900×1100px</span></div>
+          <span class="price-tag">LKR 4,700</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Sunflower</h3>
           <p>A warm, single statement bloom, hand-shaded petal by petal.</p>
-          <div class="product-price">LKR 4,700 <span>/ from</span></div>
           <div class="product-actions">
             <a href="#" class="btn btn-outline">View Details</a>
             <a href="#custom" class="btn btn-primary">Order</a>
@@ -929,16 +1121,16 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </article>
 
-      <article class="product-card reveal">
+      <article class="product-card reveal" data-category="minimal">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-minimal-line-art.jpg" alt="Minimal Line Art hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-minimal-line-art.jpg</code></span><span class="ph-dim">900×1100px</span></div>
+          <span class="price-tag">LKR 4,200</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Minimal Line Art</h3>
           <p>A single continuous line, quiet and modern on raw canvas.</p>
-          <div class="product-price">LKR 4,200 <span>/ from</span></div>
           <div class="product-actions">
             <a href="#" class="btn btn-outline">View Details</a>
             <a href="#custom" class="btn btn-primary">Order</a>
@@ -946,30 +1138,30 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </article>
 
-      <article class="product-card reveal">
+      <article class="product-card reveal" data-category="custom">
         <div class="img-slot" style="--ar:4/5;">
           <img src="images/product-custom-initials.jpg" alt="Custom Initials hand-painted tote bag">
           <div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/></svg><span class="ph-label">Add: <code>product-custom-initials.jpg</code></span><span class="ph-dim">900×1100px</span></div>
+          <span class="price-tag">LKR 3,900</span>
         </div>
         <div class="stamp">one of<br>one</div>
         <div class="product-info">
           <h3>Custom Initials</h3>
           <p>Hand-lettered initials framed with a small botanical sprig.</p>
-          <div class="product-price">LKR 3,900 <span>/ from</span></div>
           <div class="product-actions">
             <a href="#" class="btn btn-outline">View Details</a>
             <a href="#custom" class="btn btn-primary">Order</a>
           </div>
         </div>
       </article>
-    </div>
+        </div>
   </div>
 </section>
 
 <!-- =========================================================
      HOW IT WORKS
      ========================================================= -->
-<div class="paper-edge" style="background:var(--cream);"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path d="M0,20 Q40,4 80,18 T160,16 T240,22 T320,10 T400,20 T480,14 T560,24 T640,12 T720,20 T800,8 T880,20 T960,16 T1040,24 T1120,12 T1200,20 L1200,46 L0,46 Z" fill="#DEE3D0"/></svg></div>
+<div class="vintage-divider" style="background:var(--sage-tint);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 <section class="how" id="how">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1009,7 +1201,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
 <!-- =========================================================
      PACKAGES
      ========================================================= -->
-<div class="paper-edge" style="background:var(--sage-tint);"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path d="M0,26 Q40,10 80,24 T160,22 T240,28 T320,16 T400,26 T480,20 T560,30 T640,18 T720,26 T800,14 T880,26 T960,22 T1040,30 T1120,18 T1200,26 L1200,0 L0,0 Z" fill="#F4EEE0"/></svg></div>
+<div class="vintage-divider" style="background:var(--cream);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 <section class="packages" id="packages">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1087,6 +1279,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
 <!-- =========================================================
      CUSTOM ORDER
      ========================================================= -->
+<div class="vintage-divider on-dark" style="background:var(--charcoal);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 <section class="custom-order" id="custom">
   <div class="wrap">
     <div class="custom-copy reveal">
@@ -1168,6 +1361,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
 <!-- =========================================================
      GALLERY
      ========================================================= -->
+<div class="vintage-divider" style="background:var(--ivory);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 <section class="gallery" id="gallery">
   <div class="wrap">
     <div class="gallery-head-row reveal">
@@ -1247,7 +1441,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   </div>
 </div>
 
-<div class="paper-edge"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path d="M0,20 Q40,4 80,18 T160,16 T240,22 T320,10 T400,20 T480,14 T560,24 T640,12 T720,20 T800,8 T880,20 T960,16 T1040,24 T1120,12 T1200,20 L1200,46 L0,46 Z" fill="#F4EEE0"/></svg></div>
+<div class="vintage-divider on-dark" style="background:var(--cowhide-cocoa);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 
 <!-- =========================================================
      CUSTOMER REVIEWS
@@ -1297,7 +1491,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
 <!-- =========================================================
      FAQ
      ========================================================= -->
-<div class="paper-edge" style="background:var(--rose-tint);"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path d="M0,20 Q40,4 80,18 T160,16 T240,22 T320,10 T400,20 T480,14 T560,24 T640,12 T720,20 T800,8 T880,20 T960,16 T1040,24 T1120,12 T1200,20 L1200,46 L0,46 Z" fill="#FBF8F1"/></svg></div>
+<div class="vintage-divider" style="background:var(--ivory);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 <section class="faq" id="faq">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1353,128 +1547,8 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
 <!-- =========================================================
      CONTACT
      ========================================================= -->
-<div class="paper-edge" style="background:var(--ivory);"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path d="M0,26 Q40,10 80,24 T160,22 T240,28 T320,16 T400,26 T480,20 T560,30 T640,18 T720,26 T800,14 T880,26 T960,22 T1040,30 T1120,18 T1200,26 L1200,0 L0,0 Z" fill="#332C22"/></svg></div>
-<section class="contact" id="contact">
-  <div class="wrap">
-    <div class="contact-info reveal">
-      <span class="eyebrow">Get In Touch</span>
-      <h2>Let's create<br>something beautiful.</h2>
-      <p>Questions, ideas, or just want to say hello — we'd love to hear from you.</p>
-      <a href="https://wa.me/94000000000" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:28px;">Chat on WhatsApp</a>
-      <div class="contact-socials">
-        <a href="#" class="social-btn" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
-        <a href="#" class="social-btn" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M14 9h3V6h-3c-2 0-3 1-3 3v2H9v3h2v6h3v-6h3l1-3h-4v-2c0-.5.5-1 1-1z"/></svg></a>
-        <a href="#" class="social-btn" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M14 4v9.5a3 3 0 1 1-2-2.83"/><path d="M14 4c.5 2.2 2 3.6 4 4"/></svg></a>
-      </div>
-    </div>
+<div class="vintage-divider on-dark" style="background:var(--charcoal);"><span class="vd-line"></span><span class="vd-mark">&#10086;</span><span class="vd-line"></span></div>
 
-    <form class="contact-form reveal" id="contactForm" novalidate>
-      <div class="form-row">
-        <div class="field" data-required>
-          <label for="ct-name">Name</label>
-          <input type="text" id="ct-name" name="name" placeholder="Your name">
-          <span class="err">Please enter your name.</span>
-        </div>
-        <div class="field" data-required data-type="email">
-          <label for="ct-email">Email</label>
-          <input type="email" id="ct-email" name="email" placeholder="you@email.com">
-          <span class="err">Please enter a valid email.</span>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="field">
-          <label for="ct-whatsapp">WhatsApp</label>
-          <input type="tel" id="ct-whatsapp" name="whatsapp" placeholder="+94 7X XXX XXXX">
-        </div>
-        <div class="field">
-          <label for="ct-package">Package</label>
-          <select id="ct-package" name="package">
-            <option>Not sure yet</option>
-            <option>Basic</option>
-            <option>Standard</option>
-            <option>Premium</option>
-            <option>Custom</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row single">
-        <div class="field" data-required>
-          <label for="ct-message">Message</label>
-          <textarea id="ct-message" name="message" placeholder="How can we help?"></textarea>
-          <span class="err">Please write a short message.</span>
-        </div>
-      </div>
-      <div class="form-foot">
-        <button type="submit" class="btn btn-primary">Send Enquiry</button>
-      </div>
-      <div class="form-success" id="contactSuccess">Thank you — your message has been sent. We'll reply soon.</div>
-    </form>
-  </div>
-</section>
-
-<!-- =========================================================
-     INSTAGRAM STRIP
-     ========================================================= -->
-<div class="paper-edge" style="background:var(--charcoal);"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path d="M0,20 Q40,4 80,18 T160,16 T240,22 T320,10 T400,20 T480,14 T560,24 T640,12 T720,20 T800,8 T880,20 T960,16 T1040,24 T1120,12 T1200,20 L1200,46 L0,46 Z" fill="#FBF8F1"/></svg></div>
-<section class="insta">
-  <div class="wrap">
-    <div class="insta-head reveal">
-      <h3>@lovestitch</h3>
-      <a href="#" class="btn btn-outline">Follow Along</a>
-    </div>
-    <div class="insta-grid">
-      <div class="img-slot reveal"><img src="images/insta-01.jpg" alt="Instagram photo"><div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/></svg><span class="ph-dim"><code>insta-01.jpg</code></span></div></div>
-      <div class="img-slot reveal"><img src="images/insta-02.jpg" alt="Instagram photo"><div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/></svg><span class="ph-dim"><code>insta-02.jpg</code></span></div></div>
-      <div class="img-slot reveal"><img src="images/insta-03.jpg" alt="Instagram photo"><div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/></svg><span class="ph-dim"><code>insta-03.jpg</code></span></div></div>
-      <div class="img-slot reveal"><img src="images/insta-04.jpg" alt="Instagram photo"><div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/></svg><span class="ph-dim"><code>insta-04.jpg</code></span></div></div>
-      <div class="img-slot reveal"><img src="images/insta-05.jpg" alt="Instagram photo"><div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/></svg><span class="ph-dim"><code>insta-05.jpg</code></span></div></div>
-      <div class="img-slot reveal"><img src="images/insta-06.jpg" alt="Instagram photo"><div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/></svg><span class="ph-dim"><code>insta-06.jpg</code></span></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- =========================================================
-     FOOTER
-     ========================================================= -->
-<footer>
-  <div class="wrap">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="#top" class="brand"><img src="images/logo.png" alt="Love Stitch logo" class="brand-mark">Love Stitch</a>
-        <p>Hand-painted bags, made with love. Painted slowly, made especially for you.</p>
-      </div>
-      <div class="footer-col">
-        <h5>Explore</h5>
-        <ul>
-          <li><a href="#story">Our Story</a></li>
-          <li><a href="#collection">Collection</a></li>
-          <li><a href="#packages">Packages</a></li>
-          <li><a href="#gallery">Gallery</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Studio</h5>
-        <ul>
-          <li><a href="#custom">Custom Orders</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Follow</h5>
-        <ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">Facebook</a></li>
-          <li><a href="https://wa.me/94000000000" target="_blank" rel="noopener">WhatsApp</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Love Stitch. All rights reserved.</span>
-      <span class="footer-credit">Designed &amp; built by <a href="https://lygenexlabs.com" target="_blank" rel="noopener">Lygen Media</a></span>
-    </div>
-  </div>
-</footer>
 
 <button class="to-top" id="toTop" aria-label="Back to top">↑</button>
 
@@ -1501,14 +1575,45 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   }
   document.querySelectorAll('.img-slot img').forEach(activateImgSlot);
 
-  /* ---------- sticky nav on scroll ---------- */
-  var nav = document.getElementById('nav');
+  /* ---------- locked-scroll panel navigation ----------
+     Only one section is visible at a time. The only way to move
+     between them is clicking a link/button pointing at a section id
+     (the top bar, hero buttons, "Order" buttons, footer links, etc). */
+  var panels = document.querySelectorAll('.hero, section');
+  var navLinkEls = document.querySelectorAll('.nav-link');
   var toTop = document.getElementById('toTop');
-  window.addEventListener('scroll', function(){
-    var y = window.scrollY || document.documentElement.scrollTop;
-    nav.classList.toggle('scrolled', y > 40);
-    toTop.classList.toggle('show', y > 700);
-  }, { passive:true });
+
+  function showSection(id){
+    var target = document.getElementById(id);
+    if (!target) return;
+    panels.forEach(function(p){ p.classList.toggle('active-section', p === target); });
+    target.scrollTop = 0;
+    // reveal this panel's content immediately (no scroll-triggered fade-in
+    // in locked mode — the panel itself appearing IS the reveal)
+    target.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+    navLinkEls.forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    toTop.classList.toggle('show', id !== 'top');
+    try{ history.replaceState(null, '', '#' + id); } catch(e){ /* sandboxed preview contexts (e.g. srcdoc) block this — harmless to skip */ }
+  }
+
+  document.addEventListener('click', function(e){
+    var link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    var id = link.getAttribute('href').slice(1);
+    if (!id || !document.getElementById(id)) return;
+    e.preventDefault();
+    showSection(id);
+    hamburger.classList.remove('open');
+    navLinks.classList.remove('open');
+  });
+
+  toTop.addEventListener('click', function(){ showSection('top'); });
+
+  var startId = (location.hash || '#top').slice(1);
+  if (!document.getElementById(startId)) startId = 'top';
+  showSection(startId);
 
   /* ---------- mobile nav toggle ---------- */
   var hamburger = document.getElementById('hamburger');
@@ -1517,33 +1622,21 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     hamburger.classList.toggle('open');
     navLinks.classList.toggle('open');
   });
-  navLinks.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){
-      hamburger.classList.remove('open');
-      navLinks.classList.remove('open');
+
+  /* ---------- collection filter tabs ---------- */
+  var filterTabs = document.querySelectorAll('.filter-tab');
+  var productCards = document.querySelectorAll('.product-card');
+  filterTabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      filterTabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      var filter = tab.dataset.filter;
+      productCards.forEach(function(card){
+        var match = (filter === 'all') || (card.dataset.category === filter);
+        card.classList.toggle('is-hidden', !match);
+      });
     });
   });
-
-  /* ---------- back to top ---------- */
-  toTop.addEventListener('click', function(){
-    window.scrollTo({ top:0, behavior:'smooth' });
-  });
-
-  /* ---------- scroll reveal ---------- */
-  var revealEls = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting){
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold:0.15 });
-    revealEls.forEach(function(el){ io.observe(el); });
-  } else {
-    revealEls.forEach(function(el){ el.classList.add('in'); });
-  }
 
   /* ---------- FAQ accordion ---------- */
   document.querySelectorAll('.faq-item').forEach(function(item){
@@ -1624,13 +1717,46 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     return valid;
   }
 
-  function wireForm(formId, successId){
+  /* ---------- save submissions so the admin dashboard (admin.html) can list them ----------
+     Stored in this browser's localStorage only — there's no backend yet, so an order
+     placed on one device/browser won't show up on another. Good enough to see the
+     shape of things for now; ask me to wire up a real backend (Supabase) whenever
+     you're ready to take real orders across devices. */
+  function collectFormData(form){
+    var data = {};
+    form.querySelectorAll('input, textarea, select').forEach(function(input){
+      if (!input.name) return;
+      if (input.type === 'file'){
+        data[input.name] = (input.files && input.files.length) ? input.files[0].name : '';
+      } else {
+        data[input.name] = input.value;
+      }
+    });
+    return data;
+  }
+  function saveSubmission(kind, form){
+    try{
+      var key = 'loveStitchOrders';
+      var list = JSON.parse(localStorage.getItem(key) || '[]');
+      list.unshift({
+        id: 'o_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        kind: kind,
+        status: 'New',
+        submittedAt: new Date().toISOString(),
+        data: collectFormData(form)
+      });
+      localStorage.setItem(key, JSON.stringify(list));
+    } catch(e){ /* localStorage unavailable — the form still works either way */ }
+  }
+
+  function wireForm(formId, successId, kind){
     var form = document.getElementById(formId);
     var success = document.getElementById(successId);
     if (!form) return;
     form.addEventListener('submit', function(e){
       e.preventDefault();
       if (validateForm(form)){
+        saveSubmission(kind, form);
         success.classList.add('show');
         form.reset();
         if (fileLabel) fileLabel.textContent = '📎 Click to attach a reference image (optional)';
@@ -1646,8 +1772,8 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       });
     });
   }
-  wireForm('customForm', 'customSuccess');
-  wireForm('contactForm', 'contactSuccess');
+  wireForm('customForm', 'customSuccess', 'Custom Order');
+  wireForm('contactForm', 'contactSuccess', 'Enquiry');
 
 })();
 </script>
