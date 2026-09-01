@@ -23,8 +23,8 @@
 
   Full shot list with filenames + recommended sizes:
   images/hero-tote.jpg            1200x1500  — hero, main tote bag
-  images/story-artist.jpg         1000x1250  — artist hand-painting a tote
-  images/story-detail.jpg          900x900   — close-up of brushwork
+  images/story-artist.webp         1000x1250  — artist hand-painting a tote
+  images/story-detail.webp          900x900   — close-up of brushwork
   images/product-floral-dream.jpg  900x1100
   images/product-botanical-garden.jpg 900x1100
   images/product-butterfly-garden.jpg 900x1100
@@ -195,7 +195,7 @@ section{padding:110px 0;}
    mark, replacing the old wavy paper-edge shapes between sections */
 .vintage-divider{
   padding:38px 0;
-  display:flex;align-items:center;justify-content:center;gap:18px;
+  align-items:center;justify-content:center;gap:18px;
   color:var(--charcoal);
 }
 .vintage-divider.on-dark{color:var(--ivory);}
@@ -480,9 +480,18 @@ section{padding:110px 0;}
 }
 .back-link:hover{opacity:.7;transform:translateX(-3px);}
 .product-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:30px;
+  display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:34px;
+  counter-reset:productnum;
 }
-.product-card{position:relative;transition:transform .4s ease;}
+.product-card{
+  position:relative;counter-increment:productnum;
+  background:var(--ivory);
+  border-radius:16px;
+  padding:12px 12px 24px;
+  box-shadow:0 3px 10px -4px rgba(46,39,24,.18), 0 20px 38px -22px rgba(46,39,24,.4);
+  transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+}
+.product-card:hover{transform:translateY(-9px);box-shadow:0 3px 10px -4px rgba(46,39,24,.2), 0 34px 54px -22px rgba(46,39,24,.46);}
 .product-card.is-hidden{display:none;}
 @media (max-width:1000px){
   .product-grid{grid-template-columns:repeat(2,1fr);}
@@ -490,12 +499,19 @@ section{padding:110px 0;}
 @media (max-width:560px){
   .product-grid{grid-template-columns:1fr;}
 }
-.product-card .img-slot{--ar:4/5;overflow:hidden;}
-.product-card .img-slot img{transition:transform .6s ease;}
-.product-card:hover .img-slot img.is-loaded{transform:scale(1.06);}
+.product-card::before{
+  content:counter(productnum, decimal-leading-zero);
+  position:absolute;top:24px;left:24px;z-index:2;
+  font-family:var(--script);font-size:26px;color:rgba(251,248,241,.75);
+  text-shadow:0 2px 6px rgba(0,0,0,.35);
+  pointer-events:none;
+}
+.product-card .img-slot{--ar:4/5;overflow:hidden;border-radius:10px;}
+.product-card .img-slot img{transition:transform .7s ease;}
+.product-card:hover .img-slot img.is-loaded{transform:scale(1.07);}
 .product-card .stamp{
-  position:absolute;top:14px;right:14px;z-index:2;
-  width:56px;height:56px;border-radius:50%;
+  position:absolute;top:26px;right:26px;z-index:2;
+  width:54px;height:54px;border-radius:50%;
   background:rgba(251,248,241,.92);
   border:1px dashed var(--terracotta);
   display:flex;align-items:center;justify-content:center;
@@ -504,28 +520,19 @@ section{padding:110px 0;}
   transition:transform .3s ease;
 }
 .product-card:hover .stamp{transform:rotate(0deg) scale(1.08);}
-.price-tag{
-  position:absolute;left:16px;bottom:16px;z-index:2;
-  background:var(--ivory);color:var(--charcoal);
-  padding:9px 16px 9px 22px;
-  font-family:var(--serif);font-weight:600;font-size:16px;
-  border-radius:0 4px 4px 0;
-  transform:rotate(-3deg);
-  box-shadow:0 10px 20px rgba(0,0,0,.28);
-  transition:transform .3s ease;
+.product-info{padding:18px 8px 0;}
+.product-info h3{
+  font-family:var(--display);font-style:italic;font-weight:700;
+  font-size:21px;color:var(--charcoal);
 }
-.product-card:hover .price-tag{transform:rotate(0deg) translateY(-2px);}
-.price-tag::before{
-  content:"";position:absolute;left:9px;top:50%;transform:translateY(-50%);
-  width:6px;height:6px;border-radius:50%;
-  background:var(--cream);
-  box-shadow:0 0 0 1px rgba(46,39,24,.45);
+.product-info p{font-size:13.5px;color:#3B301E;margin-top:7px;line-height:1.55;}
+.product-actions{margin-top:18px;}
+.product-actions .btn{
+  padding:13px 16px;font-size:10.5px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
 }
-.product-info{padding-top:16px;}
-.product-info h3{font-size:20px;font-weight:600;}
-.product-info p{font-size:13.5px;color:#3B301E;margin-top:5px;}
-.product-actions{display:flex;gap:10px;margin-top:16px;}
-.product-actions .btn{padding:11px 16px;font-size:10.5px;flex:1;}
+.product-actions .btn::after{content:"→";font-size:13px;transition:transform .25s ease;}
+.product-actions .btn:hover::after{transform:translateX(3px);}
 
 /* =========================================================
    5. HOW IT WORKS
@@ -549,7 +556,13 @@ section{padding:110px 0;}
 /* =========================================================
    6. PACKAGES
    ========================================================= */
-.packages{background:var(--cream);}
+.packages{background:#E9D8AE;}
+.packages .section-head h2{
+  font-size:clamp(38px,5.4vw,62px);
+  font-weight:700;
+  font-family:var(--display);
+  font-style:italic;
+}
 .packages .wrap{position:relative;}
 .packages::before{
   content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);
@@ -557,59 +570,99 @@ section{padding:110px 0;}
   background:radial-gradient(circle,rgba(166,85,47,.16),transparent 70%);
   pointer-events:none;
 }
-.package-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:stretch;position:relative;}
+.packages::after{
+  content:"";position:absolute;bottom:-160px;right:-100px;
+  width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(116,128,95,.14),transparent 70%);
+  pointer-events:none;
+}
+.package-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;align-items:stretch;position:relative;}
 @media (max-width:1150px){.package-grid{grid-template-columns:repeat(2,1fr);max-width:760px;margin:0 auto;}}
 @media (max-width:600px){.package-grid{grid-template-columns:1fr;max-width:420px;}}
 .package-card{
+  --accent: var(--terracotta);
   background:var(--ivory);
   border:1px solid var(--line);
-  border-radius:14px;
+  border-radius:18px;
   padding:0;
   display:flex;flex-direction:column;
   position:relative;overflow:hidden;
+  box-shadow:0 14px 30px -20px rgba(51,44,34,.35);
   transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .35s ease;
 }
 .package-card::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:5px;
-  background:linear-gradient(90deg,var(--terracotta),#d7a679);
+  content:"";position:absolute;top:0;left:0;right:0;height:6px;
+  background:var(--accent);
 }
-.package-card:hover{transform:translateY(-10px);box-shadow:0 32px 54px -22px rgba(51,44,34,.3);}
-.pkg-inner{padding:38px 30px 30px;display:flex;flex-direction:column;flex:1;}
+.package-card::after{
+  content:"";position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle, rgba(166,85,47,.18), transparent 70%);
+  pointer-events:none;
+}
+.package-card:hover{transform:translateY(-10px);box-shadow:0 32px 54px -22px rgba(51,44,34,.32);border-color:var(--accent);}
+.package-card.accent-sage{--accent: var(--sage);}
+.package-card.accent-sage::after{background:radial-gradient(circle, rgba(116,128,95,.2), transparent 70%);}
+.package-card.accent-gold{--accent: var(--gold);}
+.package-card.accent-gold::after{background:radial-gradient(circle, rgba(156,122,66,.2), transparent 70%);}
+.package-card.accent-wine{--accent: var(--spiced-wine);}
+.package-card.accent-wine::after{background:radial-gradient(circle, rgba(110,46,26,.22), transparent 70%);}
+.pkg-inner{padding:34px 30px 30px;display:flex;flex-direction:column;flex:1;position:relative;z-index:1;}
+.pkg-icon{
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(166,85,47,.14);
+  color:var(--accent);
+  margin-bottom:16px;
+}
+.package-card.accent-sage .pkg-icon{background:rgba(116,128,95,.16);}
+.package-card.accent-gold .pkg-icon{background:rgba(156,122,66,.16);}
+.package-card.accent-wine .pkg-icon{background:rgba(110,46,26,.16);}
+.pkg-icon svg{width:22px;height:22px;}
 .pkg-num{
   position:absolute;top:20px;right:24px;
-  font-family:var(--script);font-size:34px;color:rgba(46,39,24,.1);
-  line-height:1;
+  font-family:var(--script);font-size:34px;color:rgba(46,39,24,.12);
+  line-height:1;z-index:1;
 }
 .package-card.featured{background:var(--charcoal);color:var(--ivory);border-color:var(--charcoal);}
+.package-card.featured::after{background:radial-gradient(circle, rgba(215,166,121,.28), transparent 70%);}
 .package-card.featured .eyebrow{color:#d7a679;}
 .package-card.featured .pkg-num{color:rgba(251,248,241,.08);}
 .package-card.featured h3, .package-card.featured .pkg-price{color:var(--ivory);}
 .package-card.featured .pkg-note{color:rgba(251,248,241,.65);}
 .package-card.featured li{color:rgba(251,248,241,.85);border-color:rgba(251,248,241,.14);}
 .package-card.featured li::before{color:#d7a679;}
+.package-card.featured .pkg-icon{background:rgba(215,166,121,.18);color:#d7a679;}
 .package-card.featured .btn-outline{border-color:rgba(251,248,241,.5);color:var(--ivory);}
 .package-card.featured .btn-outline:hover{background:var(--ivory);color:var(--charcoal);}
 .pkg-badge{
-  position:absolute;top:20px;right:24px;
+  position:absolute;top:20px;right:24px;z-index:2;
   background:var(--terracotta);color:var(--ivory);
   font-size:10px;letter-spacing:.12em;text-transform:uppercase;
   padding:6px 12px;border-radius:20px;
   box-shadow:0 8px 18px -6px rgba(166,85,47,.6);
 }
-.package-card .eyebrow{margin-bottom:8px;}
-.package-card h3{font-size:25px;}
-.pkg-price{font-family:var(--serif);font-size:38px;margin-top:16px;color:var(--charcoal);}
+.pkg-badge.subtle{
+  background:var(--accent);
+  box-shadow:0 8px 18px -6px rgba(46,39,24,.35);
+}
+.package-card .eyebrow{margin-bottom:6px;letter-spacing:.16em;color:var(--accent);}
+.package-card.featured .eyebrow{letter-spacing:.16em;}
+.package-card h3{font-size:24px;}
+.pkg-price{font-family:var(--serif);font-size:36px;margin-top:14px;color:var(--charcoal);}
 .pkg-price span{font-family:var(--sans);font-size:12px;color:#4E3F27;}
 .pkg-price-alt{font-size:13px;margin-top:6px;color:var(--terracotta);font-weight:600;}
 .package-card.featured .pkg-price-alt{color:#d7a679;}
-.pkg-note{font-size:13px;color:#443722;margin-top:6px;}
-.package-card ul{margin-top:26px;flex:1;display:flex;flex-direction:column;gap:11px;}
+.pkg-note{font-size:13px;color:#443722;margin-top:8px;line-height:1.5;}
+.package-card.featured .pkg-note{color:rgba(251,248,241,.68);}
+.package-card ul{margin-top:24px;flex:1;display:flex;flex-direction:column;gap:10px;}
 .package-card li{
-  font-size:13.5px;padding-bottom:11px;border-bottom:1px dashed var(--line);
+  font-size:13.5px;padding-bottom:10px;border-bottom:1px dashed var(--line);
   display:flex;gap:9px;align-items:flex-start;
 }
-.package-card li::before{content:"✦";color:var(--terracotta);font-size:10px;margin-top:3px;}
-.package-card .btn{margin-top:26px;width:100%;white-space:normal;line-height:1.4;text-align:center;padding:14px 18px;}
+.package-card li::before{content:"✦";color:var(--accent);font-size:10px;margin-top:3px;}
+.package-card .btn{margin-top:24px;width:100%;white-space:normal;line-height:1.4;text-align:center;padding:14px 18px;}
+.package-card:not(.featured) .btn-outline{border-color:var(--accent);color:var(--accent);}
+.package-card:not(.featured) .btn-outline:hover{background:var(--accent);color:var(--ivory);border-color:var(--accent);}
 
 /* =========================================================
    7. CUSTOM ORDER
@@ -747,11 +800,27 @@ section{padding:110px 0;}
   box-shadow:none;
   transition:transform .35s ease;
 }
+.masonry .img-slot{
+  will-change:transform, opacity;
+  transform:scale(var(--cf-scale, 1));
+  opacity:var(--cf-opacity, 1);
+  transition:transform .3s ease, opacity .3s ease, box-shadow .35s ease;
+}
 .masonry .img-slot:hover{
-  transform:translateY(-4px);
+  box-shadow:
+    0 2px 5px rgba(46,39,24,.12) inset,
+    0 26px 50px -14px rgba(46,39,24,.55);
 }
 .masonry .img-slot img{
   object-fit:contain;
+}
+.gallery-progress{
+  position:relative;height:3px;margin-top:26px;
+  background:rgba(46,39,24,.15);border-radius:2px;overflow:hidden;
+}
+.gallery-progress-bar{
+  position:absolute;top:0;left:0;height:100%;width:0%;
+  background:var(--terracotta);border-radius:2px;
 }
 .g1{width:400px;height:620px;}
 .g2{width:560px;height:400px;align-self:flex-start;}
@@ -901,7 +970,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
      ========================================================= -->
 <nav class="nav" id="nav">
   <div class="wrap">
-    <a href="#top" class="brand"><img src="images/logo.png" alt="Love Stitch logo" class="brand-mark">Love Stitch</a>
+    <a href="#top" class="brand"><img src="images/logo.webp" alt="Love Stitch logo" class="brand-mark">Love Stitch</a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#top" class="nav-link">Home</a></li>
       <li><a href="#story" class="nav-link">Our Story</a></li>
@@ -928,10 +997,10 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   <div class="hero-inner">
     <div class="hero-photo">
       <div class="img-slot">
-        <img src="images/hero-tote copy.jpg" alt="Hand-painted tote bag, hero photo" loading="eager">
+        <img src="images/hero-tote.webp" alt="Hand-painted tote bag, hero photo" loading="eager">
         <div class="img-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M3 7h18M6 7V4h12v3M5 7l1 13h12l1-13"/><circle cx="9" cy="14" r="1.4"/><path d="M9 17c1.2-2 3.8-2 5 0"/></svg>
-          <span class="ph-label">Add photo: <code>images/hero-tote.jpg</code></span>
+          <span class="ph-label">Add photo: <code>images/hero-tote.webp</code></span>
           <span class="ph-dim">Full-bleed hero — recommended 1800×1600px, landscape, subject kept toward the top third</span>
         </div>
       </div>
@@ -965,7 +1034,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   <div class="wrap">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="#top" class="brand"><img src="images/logo.png" alt="Love Stitch logo" class="brand-mark">Love Stitch</a>
+        <a href="#top" class="brand"><img src="images/logo.webp" alt="Love Stitch logo" class="brand-mark">Love Stitch</a>
         <p>Hand-painted bags, made with love. Painted slowly, made especially for you.</p>
       </div>
       <div class="footer-col">
@@ -1008,18 +1077,18 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   <div class="wrap">
     <div class="story-visual reveal">
       <div class="img-slot story-img-main" style="--ar:3/4;">
-        <img src="images/story-artist.jpg" alt="Artist hand-painting a tote bag">
+        <img src="images/story-artist.webp" alt="Artist hand-painting a tote bag">
         <div class="img-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><path d="M12 3c-3 0-5 2-5 5 0 2 1 3 1 4a2 2 0 0 1-2 2c-1 0-2-.5-2-1.5C4 17 8 21 12 21c5 0 9-4 9-9 0-5-4-9-9-9Z"/><circle cx="9" cy="10" r="1"/><circle cx="13" cy="8" r="1"/><circle cx="15" cy="12" r="1"/></svg>
-          <span class="ph-label">Add photo: <code>images/story-artist.jpg</code></span>
+          <span class="ph-label">Add photo: <code>images/story-artist.webp</code></span>
           <span class="ph-dim">Recommended 1000×1250px</span>
         </div>
       </div>
       <div class="img-slot story-img-accent" style="--ar:1/1;">
-        <img src="images/story-detail.jpg" alt="Close-up of hand-painted brushwork on canvas">
+        <img src="images/story-detail.webp" alt="Close-up of hand-painted brushwork on canvas">
         <div class="img-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="#5C4630" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 15l5-5 4 4 5-6 4 4"/></svg>
-          <span class="ph-label">Add photo: <code>images/story-detail.jpg</code></span>
+          <span class="ph-label">Add photo: <code>images/story-detail.webp</code></span>
           <span class="ph-dim">900×900px</span>
         </div>
       </div>
@@ -1138,9 +1207,10 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     </div>
 
     <div class="package-grid">
-      <div class="package-card reveal">
+      <div class="package-card accent-sage reveal">
         <div class="pkg-num">01</div>
         <div class="pkg-inner">
+          <div class="pkg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4-1-7-4.5-7-9 0-4 2.5-7 7-9 4.5 2 7 5 7 9 0 4.5-3 8-7 9Z"/><path d="M12 21V8"/></svg></div>
           <span class="eyebrow">Basic</span>
           <h3>Basic</h3>
           <div class="pkg-price">LKR 1,000</div>
@@ -1148,7 +1218,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
           <ul>
             <li>Pre-made bag</li>
             <li>Medium artwork</li>
-            <li>5 colours</li>
+            <li>Upto 3 colours</li>
             <li>Single side</li>
             <li>Name can be added</li>
           </ul>
@@ -1156,17 +1226,18 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </div>
 
-      <div class="package-card reveal">
-        <div class="pkg-num">02</div>
+      <div class="package-card accent-gold reveal">
+        <span class="pkg-badge subtle">Popular</span>
         <div class="pkg-inner">
+          <div class="pkg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6L12 17l-5.9 3.5 1.3-6.6-4.9-4.6 6.6-.7L12 2.5Z"/></svg></div>
           <span class="eyebrow">Standard</span>
           <h3>Standard</h3>
           <div class="pkg-price">LKR 1,200</div>
           <p class="pkg-note">Our most-chosen everyday piece — pick your bag from the Standard Collection.</p>
           <ul>
             <li>Pre-made bag</li>
-            <li>Large &amp; detailed artwork</li>
-            <li>Unlimited colours</li>
+            <li>Detailed artwork</li>
+            <li>Upto 6 colours</li>
             <li>Single side</li>
             <li>Name, initials, or short quote</li>
           </ul>
@@ -1177,6 +1248,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <div class="package-card featured reveal">
         <span class="pkg-badge">Most Loved</span>
         <div class="pkg-inner">
+          <div class="pkg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19c4-1 7-5 7-9a5 5 0 0 0-9-3 5 5 0 0 0-9 3c0 1.6.6 2.8 1.5 3.8"/><path d="M12 19v2M9 21h6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="7" r="1"/></svg></div>
           <span class="eyebrow">Customize</span>
           <h3>Customize</h3>
           <div class="pkg-price">LKR 1,400<span> single side</span></div>
@@ -1192,9 +1264,9 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         </div>
       </div>
 
-      <div class="package-card reveal">
-        <div class="pkg-num">04</div>
+      <div class="package-card accent-wine reveal">
         <div class="pkg-inner">
+          <div class="pkg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19c4-1 7-5 7-9a5 5 0 0 0-9-3 5 5 0 0 0-9 3c0 1.6.6 2.8 1.5 3.8"/><path d="M12 19v2M9 21h6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="7" r="1"/><path d="M4.5 7.5l-2 1.5M19.5 7.5l2 1.5" opacity=".7"/></svg></div>
           <span class="eyebrow">Customize</span>
           <h3>Customize — Double Side</h3>
           <div class="pkg-price">LKR 1,600<span> double side</span></div>
@@ -1221,8 +1293,8 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   <div class="wrap">
     <div class="custom-copy reveal">
       <span class="eyebrow">Custom Orders</span>
-      <h2>Your idea,<br>our canvas.</h2>
-      <p>Have something special in mind? Tell us your idea, colours, inspiration, or share a reference image and we'll turn it into a hand-painted piece made especially for you.</p>
+      <h2 id="customHeading">Your idea,<br>our canvas.</h2>
+      <p id="customSubtext">Have something special in mind? Tell us your idea, colours, inspiration, or share a reference image and we'll turn it into a hand-painted piece made especially for you.</p>
     </div>
 
     <form class="order-form reveal" id="customForm" novalidate>
@@ -1248,7 +1320,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       <div class="form-row">
         <div class="field" data-required>
           <label for="c-whatsapp">WhatsApp Number</label>
-          <input type="tel" id="c-whatsapp" name="whatsapp" placeholder="++94 77 794 3664">
+          <input type="tel" id="c-whatsapp" name="whatsapp" placeholder="+94 77 794 3664">
           <span class="err">Please enter your WhatsApp number.</span>
         </div>
         <div class="field">
@@ -1262,29 +1334,31 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
           <span class="lock-note" id="c-package-lock-note" style="display:none;">🔒 Locked to your selection above — hit "Change" to pick a different one.</span>
         </div>
       </div>
-      <div class="form-row">
-        <div class="field">
-          <label>Bag Colour</label>
-          <div class="color-toggle" id="c-color-toggle" data-value="Black">
-            <button type="button" class="color-toggle-opt active" data-color="Black">Black</button>
-            <button type="button" class="color-toggle-opt" data-color="White">White</button>
+      <div id="customOnlyFields">
+        <div class="form-row">
+          <div class="field">
+            <label>Bag Colour</label>
+            <div class="color-toggle" id="c-color-toggle" data-value="Black">
+              <button type="button" class="color-toggle-opt active" data-color="Black">Black</button>
+              <button type="button" class="color-toggle-opt" data-color="White">White</button>
+            </div>
+            <input type="hidden" id="c-color" name="bagColour" value="Black">
           </div>
-          <input type="hidden" id="c-color" name="bagColour" value="Black">
+          <div class="field">
+            <label for="c-palette">Preferred Colours</label>
+            <input type="text" id="c-palette" name="palette" placeholder="e.g. terracotta, sage, dusty rose">
+          </div>
         </div>
-        <div class="field">
-          <label for="c-palette">Preferred Colours</label>
-          <input type="text" id="c-palette" name="palette" placeholder="e.g. terracotta, sage, dusty rose">
+        <div class="form-row single">
+          <div class="field" data-required id="c-idea-field">
+            <label for="c-idea">Design Idea</label>
+            <textarea id="c-idea" name="idea" placeholder="Tell us what you're imagining..."></textarea>
+            <span class="err">Tell us a little about your idea.</span>
+          </div>
         </div>
-      </div>
-      <div class="form-row single">
-        <div class="field" data-required>
-          <label for="c-idea">Design Idea</label>
-          <textarea id="c-idea" name="idea" placeholder="Tell us what you're imagining..."></textarea>
-          <span class="err">Tell us a little about your idea.</span>
+        <div class="form-row single">
+          <div class="field upload-note">📷 Got a reference photo? Send it to us on WhatsApp.</div>
         </div>
-      </div>
-      <div class="form-row single">
-        <div class="field upload-note">📷 Got a reference photo? Send it to us on WhatsApp.</div>
       </div>
       <div class="form-row single">
         <div class="field">
@@ -1330,6 +1404,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       remove, or reorder photos there; nothing here needs to be touched.
     -->
     <div class="masonry" id="masonryGrid"></div>
+    <div class="gallery-progress"><div class="gallery-progress-bar" id="galleryProgressBar"></div></div>
   </div>
 </section>
 
@@ -1623,16 +1698,16 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   ];
 
   var GALLERY_ITEMS = [
-    { image: "images/gallery/gallery-01.png", alt: "Hand-painted tote bag", caption: "Finished hand-painted tote, ready to carry" },
-    { image: "images/gallery/gallery-02.png", alt: "Paint palette and brushes", caption: "Paint palette and brushes on the studio table" },
-    { image: "images/gallery/gallery-03.png", alt: "Close-up hand-painted detail", caption: "Close-up of hand-painted floral detail" },
-    { image: "images/gallery/gallery-04.png", alt: "Artist painting", caption: "Artist mid-brushstroke on fresh canvas" },
-    { image: "images/gallery/gallery-05.png", alt: "Fabric swatches", caption: "Fabric swatches used for custom orders" },
-    { image: "images/gallery/gallery-06.png", alt: "Gift packaging", caption: "Gift packaging, ready to send" },
-    { image: "images/gallery/gallery-07.png", alt: "Custom initials tote", caption: "A finished custom initials piece" },
-    { image: "images/gallery/gallery-08.png", alt: "Tote bag lifestyle photo", caption: "Lifestyle photo, tote bag out in the world" },
-    { image: "images/gallery/gallery-09.png", alt: "Wildflower design detail", caption: "Wildflower design, freshly painted" },
-    { image: "images/gallery/gallery-10.png", alt: "Studio corner with brushes", caption: "Studio corner, brushes drying" }
+    { image: "images/gallery/gallery-01.webp", alt: "Hand-painted tote bag", caption: "Finished hand-painted tote, ready to carry" },
+    { image: "images/gallery/gallery-02.webp", alt: "Paint palette and brushes", caption: "Paint palette and brushes on the studio table" },
+    { image: "images/gallery/gallery-03.webp", alt: "Close-up hand-painted detail", caption: "Close-up of hand-painted floral detail" },
+    { image: "images/gallery/gallery-04.webp", alt: "Artist painting", caption: "Artist mid-brushstroke on fresh canvas" },
+    { image: "images/gallery/gallery-05.webp", alt: "Fabric swatches", caption: "Fabric swatches used for custom orders" },
+    { image: "images/gallery/gallery-06.webp", alt: "Gift packaging", caption: "Gift packaging, ready to send" },
+    { image: "images/gallery/gallery-07.webp", alt: "Custom initials tote", caption: "A finished custom initials piece" },
+    { image: "images/gallery/gallery-08.webp", alt: "Tote bag lifestyle photo", caption: "Lifestyle photo, tote bag out in the world" },
+    { image: "images/gallery/gallery-09.webp", alt: "Wildflower design detail", caption: "Wildflower design, freshly painted" },
+    { image: "images/gallery/gallery-10.webp", alt: "Studio corner with brushes", caption: "Studio corner, brushes drying" }
   ];
 
   /* =========================================================
@@ -1733,6 +1808,9 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       a.classList.toggle('active', a.getAttribute('href') === '#' + id);
     });
     toTop.classList.toggle('show', id !== 'top');
+    if (id === 'gallery' && typeof updateGalleryCoverflow === 'function'){
+      requestAnimationFrame(updateGalleryCoverflow);
+    }
     try{ history.replaceState(null, '', '#' + id); } catch(e){ /* sandboxed preview contexts (e.g. srcdoc) block this — harmless to skip */ }
   }
 
@@ -1782,6 +1860,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
   var galleryTrack = document.getElementById('masonryGrid');
   var galleryPrev = document.getElementById('galleryPrev');
   var galleryNext = document.getElementById('galleryNext');
+  var galleryProgressBar = document.getElementById('galleryProgressBar');
   if (galleryTrack && galleryPrev && galleryNext){
     galleryPrev.addEventListener('click', function(){
       galleryTrack.scrollBy({ left:-360, behavior:'smooth' });
@@ -1789,6 +1868,43 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     galleryNext.addEventListener('click', function(){
       galleryTrack.scrollBy({ left:360, behavior:'smooth' });
     });
+  }
+
+  /* ---------- gallery "coverflow" — tiles nearest the centre of the
+     visible strip sit full-size and full-opacity; tiles further off to
+     either side quietly shrink and fade as you scroll past them ---------- */
+  var coverflowTicking = false;
+  function updateGalleryCoverflow(){
+    coverflowTicking = false;
+    if (!galleryTrack) return;
+    var trackRect = galleryTrack.getBoundingClientRect();
+    var centerX = trackRect.left + trackRect.width / 2;
+    var tiles = galleryTrack.querySelectorAll('.gallery-item');
+    tiles.forEach(function(tile){
+      var r = tile.getBoundingClientRect();
+      var tileCenter = r.left + r.width / 2;
+      var maxDist = trackRect.width / 2 + r.width / 2;
+      var norm = Math.min(Math.abs(tileCenter - centerX) / maxDist, 1);
+      tile.style.setProperty('--cf-scale', (1 - norm * 0.14).toFixed(3));
+      tile.style.setProperty('--cf-opacity', (1 - norm * 0.55).toFixed(3));
+    });
+    if (galleryProgressBar){
+      var max = galleryTrack.scrollWidth - galleryTrack.clientWidth;
+      var pct = max > 0 ? (galleryTrack.scrollLeft / max) * 100 : 0;
+      galleryProgressBar.style.width = pct + '%';
+    }
+  }
+  function onGalleryScroll(){
+    if (!coverflowTicking){
+      coverflowTicking = true;
+      requestAnimationFrame(updateGalleryCoverflow);
+    }
+  }
+  if (galleryTrack){
+    galleryTrack.addEventListener('scroll', onGalleryScroll, { passive:true });
+    window.addEventListener('resize', onGalleryScroll);
+    // run once after the gallery images render into the DOM
+    setTimeout(updateGalleryCoverflow, 50);
   }
 
   /* ---------- gallery lightbox ---------- */
@@ -1831,7 +1947,17 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
      into the custom form — and lock the Package field once it's been
      set this way, so it can't accidentally get changed in the form
      itself. Clicking "Change" (or picking a different design/package
-     and coming back) unlocks it again. ---------- */
+     and coming back) unlocks it again.
+
+     It also switches the form between two modes:
+       "custom"  — full form (bag colour, preferred colours, design idea,
+                   reference photo note) — used for the two Customize
+                   packages, and by default if someone lands on the form
+                   without picking anything specific.
+       "premade" — those extra fields are hidden and not required, since
+                   a Basic/Standard buyer already picked an exact design
+                   from the collection — they just need their contact
+                   details and package confirmed. ---------- */
   (function(){
     var banner = document.getElementById('selectedDesignBanner');
     var textEl = document.getElementById('selectedDesignText');
@@ -1840,12 +1966,43 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
     var packageField = packageSelect ? packageSelect.closest('.field') : null;
     var lockNote = document.getElementById('c-package-lock-note');
     var clearBtn = document.getElementById('clearSelectedDesign');
+    var customOnlyFields = document.getElementById('customOnlyFields');
+    var ideaField = document.getElementById('c-idea-field');
+    var headingEl = document.getElementById('customHeading');
+    var subtextEl = document.getElementById('customSubtext');
     if (!banner) return;
 
     var packageOptionMap = {
       'Basic': 'Basic — LKR 1,000',
       'Standard': 'Standard — LKR 1,200'
     };
+
+    var COPY = {
+      custom: {
+        heading: 'Your idea,<br>our canvas.',
+        subtext: 'Have something special in mind? Tell us your idea, colours, inspiration, or share a reference image and we\'ll turn it into a hand-painted piece made especially for you.'
+      },
+      premade: {
+        heading: 'Almost there —<br>just the details.',
+        subtext: 'Great pick! Just fill in your details below and we\'ll get your hand-painted tote ready to send.'
+      }
+    };
+
+    function setOrderMode(mode){
+      var isPremade = (mode === 'premade');
+      if (customOnlyFields) customOnlyFields.style.display = isPremade ? 'none' : '';
+      if (ideaField){
+        if (isPremade){
+          ideaField.removeAttribute('data-required');
+          ideaField.classList.remove('invalid');
+        } else {
+          ideaField.setAttribute('data-required', '');
+        }
+      }
+      var copy = COPY[isPremade ? 'premade' : 'custom'];
+      if (headingEl) headingEl.innerHTML = copy.heading;
+      if (subtextEl) subtextEl.textContent = copy.subtext;
+    }
 
     function lockPackage(){
       if (!packageSelect) return;
@@ -1870,6 +2027,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         packageSelect.value = packageOptionMap[pkg];
         lockPackage();
       }
+      setOrderMode('premade');
     }
 
     /* package chosen directly from the Packages section (Customize cards) */
@@ -1880,6 +2038,7 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       banner.style.display = '';
       packageSelect.value = packageOptionText;
       lockPackage();
+      setOrderMode('custom');
     }
 
     document.querySelectorAll('.choose-design-btn').forEach(function(btn){
@@ -1899,8 +2058,12 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
         hiddenInput.value = '';
         banner.style.display = 'none';
         unlockPackage();
+        setOrderMode('custom');
       });
     }
+
+    /* default state on page load: full custom form */
+    setOrderMode('custom');
   })();
 
   /* ---------- form validation + success message ---------- */
@@ -1949,15 +2112,17 @@ footer{background:var(--charcoal);color:rgba(251,248,241,.75);padding:70px 0 26p
       'WhatsApp: ' + (data.whatsapp || '-'),
       'Package: ' + (data.package || '-'),
     ];
-    if (data.selectedDesign){
+    var isPremade = !!data.selectedDesign;
+    if (isPremade){
       lines.push('Selected Design: ' + data.selectedDesign);
+    } else {
+      lines.push(
+        'Bag Colour: ' + (data.bagColour || '-'),
+        'Preferred Colours: ' + (data.palette || '-'),
+        '',
+        'Design Idea: ' + (data.idea || '-')
+      );
     }
-    lines.push(
-      'Bag Colour: ' + (data.bagColour || '-'),
-      'Preferred Colours: ' + (data.palette || '-'),
-      '',
-      'Design Idea: ' + (data.idea || '-')
-    );
     if (data.notes){
       lines.push('', 'Additional Notes: ' + data.notes);
     }
